@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Resume Reality Check</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs" type="module"></script>
+<style>
+:root{--ink:#172033;--muted:#68738a;--bg:#f7f8fc;--card:#fff;--line:#e7eaf1;--accent:#6c5ce7;--accent2:#20b486;--warn:#f59f00;--bad:#e05252;--good:#21a366;--shadow:0 14px 40px rgba(35,43,72,.08)}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#fafbff,#f4f7fb);color:var(--ink);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.container{max-width:1180px;margin:auto;padding:34px 22px 70px}.nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:54px}.brand{font-weight:800;letter-spacing:-.03em;font-size:18px}.brand span{color:var(--accent)}.tag{font-size:12px;padding:7px 11px;border:1px solid var(--line);border-radius:99px;background:#fff;color:var(--muted)}
+.hero{max-width:800px;margin:0 auto 30px;text-align:center}.eyebrow{text-transform:uppercase;letter-spacing:.14em;color:var(--accent);font-weight:800;font-size:12px}.hero h1{font-size:clamp(38px,6vw,68px);line-height:.98;letter-spacing:-.055em;margin:13px 0 18px}.hero p{font-size:18px;color:var(--muted);margin:0 auto 26px;max-width:690px}.card{background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow)}.upload{padding:28px;margin:28px auto;max-width:800px}.drop{border:2px dashed #d9ddec;border-radius:17px;padding:34px;text-align:center;cursor:pointer;background:#fbfcff;transition:.2s}.drop:hover,.drop.drag{border-color:var(--accent);background:#f8f6ff}.drop strong{display:block;font-size:17px}.drop small{color:var(--muted);display:block;margin:6px 0 15px}.btn{border:0;background:var(--accent);color:#fff;padding:11px 17px;border-radius:11px;font-weight:750;cursor:pointer}.btn.secondary{background:#eef0ff;color:#5648c8}.or{color:#a0a7b8;font-size:12px;margin:15px 0}.paste{width:100%;min-height:125px;border:1px solid var(--line);border-radius:13px;padding:13px;resize:vertical;font:14px inherit;outline:none}.paste:focus{border-color:#aaa0f4;box-shadow:0 0 0 3px #eeeaff}.demo{margin-top:12px;text-align:center}.demo button{background:none;border:0;color:var(--accent);font-weight:700;cursor:pointer}
+.hidden{display:none}.results{margin-top:34px}.result-head{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:18px}.result-head h2{font-size:30px;letter-spacing:-.04em;margin:0}.result-head p{margin:4px 0;color:var(--muted)}.grid{display:grid;grid-template-columns:1.05fr 1fr;gap:18px}.scores{padding:24px}.scores h3,.issues h3,.story h3,.evidence h3{margin:0 0 18px;font-size:17px}.score{margin:16px 0}.scoretop{display:flex;justify-content:space-between;font-weight:700}.bar{height:8px;background:#edf0f5;border-radius:99px;margin-top:7px;overflow:hidden}.fill{height:100%;border-radius:99px;background:var(--accent)}.fill.good{background:var(--good)}.fill.warn{background:var(--warn)}.issues{padding:24px}.issue{padding:16px 0;border-top:1px solid var(--line)}.issue:first-of-type{border-top:0}.pill{font-size:11px;font-weight:800;padding:4px 8px;border-radius:99px;background:#fff2d9;color:#a46400;margin-right:7px}.pill.red{background:#ffe7e7;color:#a93e3e}.pill.purple{background:#eeeaff;color:#594bc8}.issue b{display:block;margin:8px 0 4px}.issue p{margin:0;color:var(--muted)}.wide{margin-top:18px;padding:26px}.storybox{background:#f8f7ff;border-radius:16px;padding:20px;border-left:4px solid var(--accent);margin-bottom:18px}.storybox p{margin:0}.timeline{display:flex;gap:0;overflow:auto;padding:8px 0 5px}.role{min-width:190px;padding:14px 20px 12px;border-top:3px solid #d9d6fb;position:relative}.role:before{content:"";width:9px;height:9px;background:var(--accent);border-radius:50%;position:absolute;top:-6px;left:0}.role strong{display:block}.role span{font-size:12px;color:var(--muted)}.evidence-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.ev{border:1px solid var(--line);border-radius:13px;padding:13px}.ev b{font-size:18px}.ev small{display:block;color:var(--muted);margin-top:3px}
+.section-kicker{font-size:11px;text-transform:uppercase;letter-spacing:.13em;color:var(--accent);font-weight:800;margin-bottom:6px}
+.signal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.signal-card{border:1px solid var(--line);border-radius:15px;padding:16px;background:#fcfcff}
+.signal-card strong{display:block;font-size:15px;margin-bottom:5px}.signal-card p{margin:0;color:var(--muted);font-size:13px}
+.connect{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.connect-card{border:1px solid var(--line);border-radius:15px;padding:16px}
+.connect-card .status{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.status.strong{color:var(--good)}.status.moderate{color:var(--warn)}.status.weak{color:var(--bad)}
+.verb-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.verb-row{display:grid;grid-template-columns:105px 1fr 30px;align-items:center;gap:9px;font-size:13px}
+.verb-bar{height:7px;background:#edf0f5;border-radius:99px;overflow:hidden}.verb-bar i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.archetype{display:flex;gap:12px;align-items:flex-start}.archetype-icon{font-size:25px}.archetype p{margin:3px 0 0;color:var(--muted)}
+.note{font-size:12px;color:var(--muted);margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+@media(max-width:760px){.signal-grid,.connect,.verb-grid{grid-template-columns:1fr}}
+
+.footer{text-align:center;color:#8b93a5;font-size:12px;margin-top:30px}
+@media(max-width:760px){.grid,.evidence-list{grid-template-columns:1fr}.nav{margin-bottom:35px}.hero h1{font-size:44px}.container{padding:24px 14px 50px}}
+</style>
+</head>
+<body>
+<div class="container">
+<nav class="nav"><div class="brand">resume<span>reality</span>check</div><div class="tag">diagnose • don't rewrite</div></nav>
+<section class="hero">
+<div class="eyebrow">A resume sanity check</div>
+<h1>Does your resume<br>actually make sense?</h1>
+<p>Grammar can be perfect and your resume can still tell a confusing story. Upload it and check for contradictions, weak evidence, repetition, skill-story mismatch and generic corporate language.</p>
+</section>
+
+<section class="card upload">
+<div id="drop" class="drop">
+<strong id="uploadTitle">Drop your resume here</strong>
+<small id="uploadStatus">PDF or TXT • your file stays in your browser</small>
+<input id="file" type="file" accept=".pdf,.txt,application/pdf,text/plain" hidden>
+<button id="chooseBtn" class="btn" type="button">Choose resume</button>
+</div>
+<div class="or">OR PASTE YOUR RESUME</div>
+<textarea id="text" class="paste" placeholder="Paste the text of your resume here…"></textarea>
+<div id="actionStatus" style="text-align:center;min-height:20px;color:var(--muted);font-size:13px;margin-top:10px"></div>
+<div style="display:flex;justify-content:center;gap:10px;margin-top:12px">
+<button id="analyzeBtn" class="btn" type="button">Check my story →</button>
+</div>
+<div class="demo"><button id="demoBtn" type="button">Try the demo with a sample resume</button></div>
+</section>
+
+<section id="results" class="results hidden">
+<div class="result-head"><div><h2>Your resume, decoded.</h2><p id="summary"></p></div><button class="btn secondary" onclick="window.scrollTo({top:0,behavior:'smooth'})">Analyze another</button></div>
+<div class="grid">
+<div class="card scores" id="scores"></div>
+<div class="card issues"><h3>Things worth looking at</h3><div id="issues"></div></div>
+</div>
+<div class="card wide story"><h3>🧵 The story your resume tells</h3><div class="storybox"><p id="story"></p></div><div id="timeline" class="timeline"></div></div>
+<div class="card wide"><div class="section-kicker">Connections</div><h3>🔗 Does the resume connect?</h3><div id="connections" class="connect"></div><div class="note">These are evidence relationships, not judgments about the person. A weak connection can simply mean the resume has not explained it yet.</div></div>
+
+<div class="card wide"><div class="section-kicker">Professional signal</div><h3>👤 What kind of professional does this resume portray?</h3><div id="archetype" class="archetype"></div><div class="note">This describes signals communicated by the document—not a psychological or personality assessment.</div></div>
+
+<div class="card wide"><div class="section-kicker">Language</div><h3>🗣️ Professional voice</h3><div id="voice" class="signal-grid"></div></div>
+
+<div class="card wide"><div class="section-kicker">Action profile</div><h3>🛠️ What does your resume show you doing?</h3><div id="verbs" class="verb-grid"></div></div>
+
+<div class="card wide"><div class="section-kicker">Beyond the job title</div><h3>🌱 Projects, extracurriculars & interests</h3><div id="beyond" class="signal-grid"></div></div>
+
+<div class="card wide"><div class="section-kicker">Transitions</div><h3>🔄 Timeline & career changes</h3><div id="transitions"></div></div>
+
+<div class="card wide"><div class="section-kicker">Reader takeaway</div><h3>💡 The most important observation</h3><div class="storybox"><p id="takeaway"></p></div></div>
+
+<div class="card wide evidence"><h3>Evidence & signal check</h3><div id="evidence" class="evidence-list"></div></div>
+<div class="card wide"><h3>How “AI-ish” does it sound?</h3><p id="aiish" style="margin:0;color:var(--muted)"></p></div>
+</section>
+<div class="footer">Prototype • heuristic analysis • no resume is sent anywhere by this static app</div>
+</div>
+
+<script>
+const demo = `Shrishti Vaish
+Professional Summary
+Business Operations Analyst with expertise in revenue assurance, operational strategy, analytics-driven decision-making, and AI-powered workflow solutions. Led initiatives across large-scale project portfolios and revenue workflows, enabling leadership visibility for 800+ stakeholders. Delivered measurable impact through slippage reduction, zero year-end revenue leakage, and process automation using Codex, AI, and Google Apps Script.
+
+Work Experience
+Numerator
+Senior Business Analyst, Business Operations
+Owned end-to-end revenue assurance across delivery, managing slippage reporting for 100–120 monthly projects across 2 business units, reducing slippage from ~21% to <5% MoM and achieving 0% year-end slippage.
+Tracked and monitored client health across ~600 accounts.
+Built Codex-powered Slack automation to automatically identify project backlog follow-ups.
+Built the slippage dashboard using Codex.
+
+Business Analyst, Business Operations
+Supported ~$40M in subscription renewals through Stage 5 audits of 50+ contracts.
+Built and enhanced utilization and operational dashboards.
+Automated large-scale project assignment workflows, reducing manual effort by ~65% (3 hrs → 1 hr).
+Designed dashboards used by 850+ stakeholders (C-suite to team leads).
+
+Data Analyst, Talent Acquisition – Human Resources
+Increased training and event participation by 15%.
+Reduced hiring time by 10% through recruiter KPI tracking.
+Performed sentiment analysis of 300+ Glassdoor reviews.
+
+Education
+Christ University | MSc, Data Analytics
+University of Delhi | BSc, Computer Science
+
+Technical Skills
+Advanced Excel, Tableau, Power BI, Python, SQL, R, Java, Selenium, MySQL, DAX, SAP Analytics, Machine Learning, ChatGPT, Codex, Google Apps Script`;
+
+const fileInput = document.getElementById('file');
+const drop = document.getElementById('drop');
+const text = document.getElementById('text');
+const chooseBtn = document.getElementById('chooseBtn');
+const analyzeBtn = document.getElementById('analyzeBtn');
+const demoBtn = document.getElementById('demoBtn');
+const uploadTitle = document.getElementById('uploadTitle');
+const uploadStatus = document.getElementById('uploadStatus');
+const actionStatus = document.getElementById('actionStatus');
+
+function setStatus(message, type='normal') {
+  actionStatus.textContent = message;
+  actionStatus.style.color = type === 'error' ? 'var(--bad)' :
+                             type === 'success' ? 'var(--good)' : 'var(--muted)';
+}
+
+chooseBtn.addEventListener('click', () => fileInput.click());
+
+fileInput.addEventListener('change', () => {
+  if (fileInput.files && fileInput.files[0]) handleFile(fileInput.files[0]);
+});
+
+['dragenter','dragover'].forEach(evt => {
+  drop.addEventListener(evt, e => {
+    e.preventDefault();
+    drop.classList.add('drag');
+  });
+});
+['dragleave','drop'].forEach(evt => {
+  drop.addEventListener(evt, e => {
+    e.preventDefault();
+    drop.classList.remove('drag');
+  });
+});
+drop.addEventListener('drop', e => {
+  const f = e.dataTransfer.files && e.dataTransfer.files[0];
+  if (f) handleFile(f);
+});
+
+async function handleFile(f) {
+  uploadTitle.textContent = `Selected: ${f.name}`;
+  uploadStatus.textContent = `Reading ${formatBytes(f.size)}…`;
+  setStatus('Reading your resume…');
+
+  try {
+    if (f.type === 'text/plain' || /\.txt$/i.test(f.name)) {
+      text.value = await f.text();
+    } else if (f.type === 'application/pdf' || /\.pdf$/i.test(f.name)) {
+      text.value = await extractPdfText(f);
+    } else {
+      throw new Error('Please choose a PDF or TXT file.');
+    }
+
+    const chars = text.value.trim().length;
+    if (!chars) throw new Error('I could not extract text from this file. Try copying the resume text into the box below.');
+    uploadStatus.textContent = `✓ ${f.name} loaded • ${chars.toLocaleString()} characters`;
+    setStatus('Resume loaded. Click “Check my story →” to analyze it.', 'success');
+  } catch (err) {
+    uploadStatus.textContent = 'Could not read that file.';
+    setStatus(err.message || 'Something went wrong while reading the file.', 'error');
+  }
+}
+
+async function extractPdfText(file) {
+  // PDF.js is loaded only when needed, so a CDN/module issue cannot break text-only analysis.
+  const pdfjs = await import('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs');
+  pdfjs.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs';
+
+  const data = new Uint8Array(await file.arrayBuffer());
+  const pdf = await pdfjs.getDocument({data}).promise;
+  let out = '';
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    out += content.items.map(item => item.str || '').join(' ') + '\n';
+  }
+  return out;
+}
+
+function formatBytes(bytes) {
+  if (!bytes) return '0 B';
+  const units = ['B','KB','MB'];
+  const i = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), 2);
+  return `${(bytes / Math.pow(1024,i)).toFixed(i ? 1 : 0)} ${units[i]}`;
+}
+
+function loadDemo() {
+  text.value = demo;
+  uploadTitle.textContent = 'Demo resume loaded';
+  uploadStatus.textContent = 'This is sample content — edit it or analyze it as-is.';
+  setStatus('Demo loaded. Analyzing…');
+  runAnalysis();
+}
+
+function runAnalysis() {
+  try {
+    const s = text.value.trim();
+    if (s.length < 80) { setStatus('Paste or upload a little more resume text first.', 'error'); text.focus(); return; }
+    setStatus('Analyzing your resume…');
+    analyzeResume(s);
+    document.getElementById('results').classList.remove('hidden');
+    document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
+    setStatus('Analysis complete.', 'success');
+  } catch (err) { console.error('Resume Reality Check analysis error:', err); setStatus('I could not finish the analysis. Please try the pasted text again.', 'error'); }
+}
+
+function nums(s) {
+  return s.match(/(?:~|about\s*)?\$?\d+(?:\.\d+)?\s*(?:%|\+|[KkMmBb]|hours?|hrs?|projects?|accounts?|stakeholders?|contracts?|users?|customers?|records?|years?)/gi) || [];
+}
+
+const SECTION_ALIASES = {
+  summary:['summary','professional summary','profile','objective'],
+  experience:['experience','work experience','professional experience','employment'],
+  education:['education','academic background'],
+  skills:['skills','technical skills','core skills','competencies','tools'],
+  projects:['projects','selected projects','academic projects','portfolio'],
+  extracurricular:['extracurricular','activities','leadership','volunteering','community','associations','memberships'],
+  interests:['interests','hobbies']
+};
+
+function normalizeText(s){ return s.replace(/\u00a0/g,' ').replace(/[–—]/g,'-').replace(/\s+/g,' ').trim(); }
+function lineList(s){ return s.split(/\r?\n/).map(x=>x.trim()).filter(Boolean); }
+function detectSections(s){
+  const out={}; const lines=lineList(s);
+  lines.forEach((line,i)=>{
+    const clean=line.replace(/[:|•]+$/,'').trim().toLowerCase();
+    for(const [key,aliases] of Object.entries(SECTION_ALIASES)) if(aliases.some(a=>clean===a || clean.startsWith(a+':'))){ out[key]=i; break; }
+  });
+  return out;
+}
+function sectionText(s,key){
+  const lines=lineList(s), sections=detectSections(s), start=sections[key];
+  if(start==null) return '';
+  const starts=Object.values(sections).filter(i=>i>start).sort((a,b)=>a-b);
+  return lines.slice(start+1, starts.length?starts[0]:lines.length).join(' ');
+}
+function hasPhrase(s, p){ return new RegExp('(?:^|\\b)'+p.replace(/[.*+?^${}()|[\\]\\]/g,'\\$&')+'(?:\\b|$)','i').test(s); }
+function countOccurrences(text, phrase){
+  const hay=String(text||''), needle=String(phrase||'');
+  const escaped=needle.replace(/[.*+?^${}()|[\\]\\]/g,'\\$&');
+  return (hay.match(new RegExp('(?:^|\\b)'+escaped+'(?=\\b|$)','gi'))||[]).length;
+}
+function countWords(list,text){ return (Array.isArray(list)?list:[]).reduce((n,w)=>n+countOccurrences(text,w),0); }
+function hasAny(text,arr){ return arr.some(x=>text.toLowerCase().includes(x.toLowerCase())); }
+
+function parseDateToken(line){
+  const months='jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?';
+  const years=[...line.matchAll(/\b(?:19|20)\d{2}\b/g)].map(m=>Number(m[0]));
+  const range=line.match(new RegExp('(?:'+months+')?\\s*(?:19|20)\\d{2}\\s*(?:-|to|through|–|—)\\s*(?:'+months+')?\\s*(?:19|20)\\d{2}','i'));
+  return {years, range:!!range, text:line};
+}
+function extractTimeline(s){
+  const lines=lineList(s); const entries=[];
+  for(const line of lines){
+    const d=parseDateToken(line);
+    if(d.years.length){
+      const roleLike=/\b(analyst|engineer|manager|director|lead|consultant|specialist|associate|intern|founder|co-founder|professor|research|developer|designer|coordinator|advisor|contractor|freelance|student|sabbatical|break|leave)\b/i.test(line);
+      entries.push({line, years:d.years, range:d.range, roleLike});
+    }
+  }
+  return entries;
+}
+function classifyContext(s,timeline){
+  const low=s.toLowerCase();
+  const hasStudent=/\b(student|undergraduate|graduate student|candidate|campus|class of)\b/i.test(s);
+  const senior=/\b(senior|manager|director|head|principal|lead|vp|vice president)\b/i.test(s) || /\b\d+\+?\s+years?\b/i.test(s) || /\b(?:five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen)\s+years?\b/i.test(s);
+  const explicitChanger=/\b(career change|career pivot|career transition|transitioned into|switched to|moved into|pivoted to|changing careers)\b/i.test(s);
+  const work=/\b(experience|employment|worked|analyst|engineer|manager|consultant|specialist|coordinator|internship|intern)\b/i.test(s);
+  if(explicitChanger) return 'career changer';
+  if(senior) return 'experienced';
+  if(/\b(current student|student|expected \d{4}|candidate)\b/i.test(s)) return 'current student';
+  if(/\b(fresher|recent graduate|new graduate|graduate seeking|graduat(e|ed) in \d{4})\b/i.test(s) && !/\b\d+\+?\s+years?\b/i.test(s)) return 'fresher';
+  if(work) return 'early career';
+  return 'early career';
+}
+function extractSkillEvidence(s){
+  const skills=['python','sql','tableau','power bi','excel','java','r','javascript','machine learning','data analytics','data visualization','automation','google apps script','salesforce','openair','jira','confluence','dax'];
+  const skillsText=sectionText(s,'skills').toLowerCase();
+  const all=s.toLowerCase();
+  return skills.map(skill=>{
+    const total=countOccurrences(all,skill), listed=countOccurrences(skillsText,skill);
+    const outside=Math.max(0,total-listed);
+    return {skill,total,listed,outside,evidenced:outside>0};
+  }).filter(x=>x.total>0);
+}
+function extractClaims(s){
+  return lineList(s).filter(l=>/\b(reduced|increased|improved|grew|saved|generated|delivered|built|created|led|owned|managed|automated|launched|supported|analyzed|analysed|audited)\b/i.test(l));
+}
+function extractHeadline(s){
+  const lines=lineList(s); const summary=sectionText(s,'summary');
+  if(summary) return summary;
+  return lines.slice(0,5).filter(l=>l.length<160).join(' ');
+}
+function extractRoleTitles(s){
+  const lines=lineList(s), titles=[];
+  const titleRx=/\b(senior|junior|lead|principal|staff|associate|business|data|product|project|operations|marketing|finance|software|research|sales|people|hr)?\s*(analyst|engineer|manager|director|consultant|specialist|designer|developer|coordinator|scientist|administrator|founder|advisor|intern)\b/ig;
+  for(const l of lines){ let m; while((m=titleRx.exec(l))) titles.push(m[0].trim()); }
+  return [...new Set(titles)];
+}
+function detectTransitions(s){
+  const low=s.toLowerCase();
+  const explicit=/\b(career change|career pivot|career transition|transitioned into|switched to|moved into|pivoted to|changing careers|moving from .* into|moving from .* to)\b/i.test(s);
+  const summary=sectionText(s,'summary').toLowerCase();
+  const titleText=extractTimeline(s).filter(e=>e.roleLike).map(e=>e.line).join(' ').toLowerCase();
+  const map={data:['data analyst','data scientist','analytics'],product:['product manager','product owner','product'],operations:['business operations','operations manager','operations'],engineering:['software engineer','software developer','developer','engineering'],marketing:['marketing analyst','marketing manager','marketing'],finance:['finance','financial','accounting'],hr:['human resources','hr','talent acquisition'],research:['research scientist','research assistant'],management:['engineering manager','operations manager','manager']};
+  const titleDomains=new Set(), summaryDomains=new Set();
+  for(const [d,terms] of Object.entries(map)){
+    if(terms.some(t=>titleText.includes(t))) titleDomains.add(d);
+    if(terms.some(t=>summary.includes(t))) summaryDomains.add(d);
+  }
+  const implicit=!explicit && titleDomains.size>=2 && titleDomains.size<=3;
+  return {explicit,implicit,domains:[...new Set([...titleDomains,...(explicit?summaryDomains:[])])].slice(0,4)};
+}
+
+function detectTimeline(s,context){
+  const entries=extractTimeline(s); const years=[...new Set(entries.flatMap(e=>e.years))].sort((a,b)=>a-b);
+  const explicitBreak=/\b(career break|career break from|sabbatical|parental leave|caregiving|family leave|medical leave|returned to work|return to work)\b/i.test(s);
+  const education=sectionText(s,'education');
+  const educationYears=[...education.matchAll(/\b(?:19|20)\d{2}\b/g)].map(m=>Number(m[0]));
+  const roleEntries=entries.filter(e=>e.roleLike).sort((a,b)=>Math.min(...a.years)-Math.min(...b.years));
+  const overlaps=entries.some(e=>/\b(concurrent|concurrently|overlap|simultaneously|part-time)\b/i.test(e.line)) || /\b(concurrent|concurrently|overlapping|simultaneously)\b/i.test(s);
+  let gapDetected=false, gapExplainableByEducation=false;
+  for(let i=0;i<roleEntries.length;i++) for(let j=i+1;j<roleEntries.length;j++){
+    const a=roleEntries[i].years, b=roleEntries[j].years; if(a.length<2||b.length<1) continue;
+    const aStart=Math.min(...a), aEnd=Math.max(...a), bStart=Math.min(...b), bEnd=Math.max(...b);
+    const newerStart=Math.max(aStart,bStart), olderEnd=Math.min(aEnd,bEnd);
+    if(newerStart-olderEnd>=2){ gapDetected=true; if(educationYears.some(y=>y>olderEnd && y<=newerStart)) gapExplainableByEducation=true; }
+  }
+  const unexplainedSpan=gapDetected && !explicitBreak && !gapExplainableByEducation && !overlaps && context!=='current student';
+  return {entries,years,explicitBreak,educationGap:gapExplainableByEducation,overlaps,unexplainedSpan};
+}
+function compareNumbers(s){
+  const lines=lineList(s), buckets={};
+  for(const line of lines){
+    for(const m of line.matchAll(/(?:~|about\s*)?(\d+(?:\.\d+)?)\s*(%|\+|hours?|hrs?|projects?|accounts?|stakeholders?|contracts?|users?|customers?|records?|years?)/gi)){
+      const value=m[1], unit=m[2].toLowerCase().replace(/s$/,'');
+      const tail=line.slice(m.index+m[0].length).toLowerCase().replace(/[^a-z0-9]+/g,' ').trim().split(/\s+/).slice(0,5).join(' ');
+      (buckets[unit] ||= []).push({value,line,tail});
+    }
+  }
+  const issues=[];
+  for(const [unit,vals] of Object.entries(buckets)){
+    for(let i=0;i<vals.length;i++) for(let j=i+1;j<vals.length;j++){
+      if(vals[i].value===vals[j].value || vals[i].line===vals[j].line) continue;
+      const a=vals[i].tail.split(' ').slice(0,3).join(' '), b=vals[j].tail.split(' ').slice(0,3).join(' ');
+      if(a && b && a===b) issues.push({unit,values:[vals[i].value,vals[j].value],lines:[vals[i].line,vals[j].line]});
+    }
+  }
+  return issues.slice(0,5);
+}
+
+function buildArchetype(s,context){
+  const low=s.toLowerCase();
+  const groups=[
+    ['🔎','Analyst',['analyzed','analysed','evaluated','measured','researched','audited','identified','modeled','forecasted']],
+    ['🛠️','Builder',['built','created','developed','designed','implemented','automated','launched','deployed']],
+    ['⚙️','Operator',['managed','coordinated','tracked','maintained','executed','supported','administered','delivered']],
+    ['🧭','Leader',['led','owned','directed','mentored','managed','drove','chaired']]
+  ];
+  const scores=groups.map(g=>({g,n:g[2].reduce((n,w)=>n+countOccurrences(low,w),0)}));
+  const max=Math.max(1,...scores.map(x=>x.n));
+  const active=scores.filter(x=>x.n>0 && x.n>=Math.max(1,max/4)).sort((a,b)=>b.n-a.n);
+  const chosen=(active.length?active:scores.filter(x=>x.n>0).sort((a,b)=>b.n-a.n).slice(0,1));
+  const labels=chosen.map(x=>x.g[1]);
+  return {scores,labels,html:`<div class="archetype-icon">${chosen.map(x=>x.g[0]).join(' ')||'•'}</div><div><strong>${escapeHtml(labels.join(' + ')||'No clear dominant signal')} signal${labels.length>1?'s':''}</strong><p>${escapeHtml(context==='current student'?'These are signals communicated by the resume evidence; they are not a statement about personality or identity.':`The resume communicates ${labels.length?labels.join(' + ').toLowerCase():'mixed'} through recurring action evidence. Multiple signals are allowed.`)}</p></div>`};
+}
+function connectionData(s,context){
+  const skills=extractSkillEvidence(s), evidenced=skills.filter(x=>x.evidenced).length;
+  const education=!!sectionText(s,'education'), experience=!!sectionText(s,'experience'), projects=!!sectionText(s,'projects');
+  const transition=detectTransitions(s);
+  const target=extractHeadline(s).toLowerCase();
+  const skillText=skills.map(x=>x.skill).join(', ');
+  return [
+    ['Education ↔ experience', education&&experience ? (context==='experienced'?'strong':'moderate'):'weak', education&&experience?'Both are present; explicit links are stronger when the resume states how education was applied.':'The resume does not provide enough section evidence to assess this link.'],
+    ['Skills ↔ evidence', skills.length ? (evidenced>=Math.max(1,Math.ceil(skills.length/3))?'strong':'moderate'):'weak', skills.length?`${evidenced} of ${skills.length} recognized skills also appear outside the skills list (${skillText}).`:'Few recognizable skills were detected.'],
+    [context==='current student'||context==='fresher'?'Projects ↔ career direction':'Experience ↔ career direction', (projects||experience)?'moderate':'weak', projects?'Projects provide evidence beyond the job-title layer; their relevance depends on their actual content.':experience?'Experience is the main directional evidence in this resume.':'Little directional evidence was detected.'],
+    ['Headline ↔ evidence', target ? (transition.domains.length>1?'moderate':'strong'):'weak', transition.domains.length>1?'Multiple role/domain signals appear; check whether the headline explains the relationship rather than leaving the reader to infer it.':'The available headline/summary is relatively focused.']
+  ];
+}
+function renderConnections(s,context){ document.getElementById('connections').innerHTML=connectionData(s,context).map(x=>`<div class="connect-card"><div class="status ${x[1]}">${x[1]}</div><b>${escapeHtml(x[0])}</b><p style="margin:5px 0 0;color:var(--muted);font-size:13px">${escapeHtml(x[2])}</p></div>`).join(''); }
+function renderVoice(s){
+  const low=s.toLowerCase();
+  const direct=countWords(['built','created','designed','led','owned','developed','launched','drove'],low);
+  const analytical=countWords(['analyzed','analysed','measured','evaluated','researched','identified','audited','tracked'],low);
+  const technical=countWords(['python','sql','tableau','power bi','excel','automation','api','machine learning','dashboard'],low);
+  return [['Direct / ownership',direct,direct>=4?'Ownership language is visible across the resume.':'Ownership language is present but limited.'],['Analytical',analytical,analytical>=3?'Analysis and measurement recur in the evidence.':'Analytical language is present but not dominant.'],['Technical',technical,technical>=4?'Tools and systems are a visible part of the professional signal.':'Technical language is relatively light.']].map(x=>`<div class="signal-card"><strong>${escapeHtml(x[0])}</strong><p>${escapeHtml(x[2])}</p></div>`).join('');
+}
+function renderVerbs(s){
+  const low=s.toLowerCase(), groups=[['Build / create',['built','created','developed','designed','implemented','launched']],['Analyze / research',['analyzed','analysed','evaluated','researched','measured','identified','audited']],['Lead / own',['led','owned','managed','directed','mentored','drove']],['Operate / coordinate',['coordinated','tracked','maintained','organized','supported']],['Improve / optimize',['optimized','improved','reduced','increased','streamlined','automated']]];
+  const counts=groups.map(g=>[g[0],g[1].reduce((n,w)=>n+countOccurrences(low,w),0)]), max=Math.max(1,...counts.map(x=>x[1]));
+  document.getElementById('verbs').innerHTML=counts.map(x=>`<div class="verb-row"><span>${escapeHtml(x[0])}</span><div class="verb-bar"><i style="width:${Math.round(x[1]/max*100)}%"></i></div><b>${x[1]}</b></div>`).join('');
+}
+function renderBeyond(s){
+  const project=!!sectionText(s,'projects'), extra=!!sectionText(s,'extracurricular'), hobbies=!!sectionText(s,'interests');
+  document.getElementById('beyond').innerHTML=[['Projects',project,'Projects can provide career evidence when their problem, action and outcome are clear.'],['Community / extracurriculars',extra,'These can add evidence of initiative or collaboration when concrete activity is described.'],['Interests / hobbies',hobbies,'Interests are contextual signals only; the checker does not infer personality from them.']].map(x=>`<div class="signal-card"><strong>${x[0]} ${x[1]?'✓':'—'}</strong><p>${x[2]}</p></div>`).join('');
+}
+function renderTransitions(s,context){
+  const t=detectTimeline(s,context), p=detectTransitions(s); let html='';
+  if(context==='current student'||context==='fresher') html='<p style="margin:0;color:var(--muted)">This resume is read through an emerging-career lens: education, projects, internships and activities can be major evidence sources.</p>';
+  else if(p.explicit) html='<div class="issue"><span class="pill purple">TRANSITION</span><b>Career transition language detected</b><p>The resume explicitly describes a transition. The checker does not infer why the transition happened.</p></div>';
+  else if(p.implicit) html='<div class="issue"><span class="pill purple">TRANSITION</span><b>Multiple career domains appear</b><p>The resume contains signals from more than one domain. This is a prompt to clarify the relationship, not a conclusion that a career pivot occurred.</p></div>';
+  else html='<p style="margin:0;color:var(--muted)">No explicit transition language was detected. The checker does not invent a career-change explanation.</p>';
+  if(t.explicitBreak) html+='<div class="issue"><span class="pill">TIMELINE</span><b>Explained break language detected</b><p>The resume gives context such as a career break, sabbatical or leave. This is not treated as an unexplained gap.</p></div>';
+  else if(t.unexplainedSpan) html+='<div class="issue"><span class="pill">TIMELINE</span><b>Potential unexplained timeline span</b><p>Several years appear in the resume without an obvious role, education or break explanation. This is a prompt to inspect the dates, not proof that a gap exists.</p></div>';
+  else if(t.years.length) html+='<p style="margin:8px 0 0;color:var(--muted)">Date signals were found, but no unexplained gap was inferred from them.</p>';
+  document.getElementById('transitions').innerHTML=html;
+}
+function detectPositioningGap(s){
+  const h=extractHeadline(s).toLowerCase(), low=s.toLowerCase();
+  const targets={
+    'product manager': ['product manager','product owner'],
+    'business leader':['business leader'],
+    'operations leader':['operations leader','head of operations','operations director']
+  };
+  const evidence={
+    'product manager':['data analyst','reporting analyst','analyst','analytics'],
+    'business leader':['business analyst','analyst','individual contributor'],
+    'operations leader':['operations analyst','business analyst','analyst']
+  };
+  for(const [label,terms] of Object.entries(targets)) if(terms.some(t=>h.includes(t))){
+    const ev=evidence[label].filter(t=>low.includes(t));
+    if(ev.length) return {gap:true,label,evidence:ev};
+  }
+  return {gap:false};
+}
+function parseRisk(s){
+  const low=s.toLowerCase();
+  return {
+    mojibake:/Ã.|â€|Â\b/.test(s),
+    layout:/\b(two-column|two column|column|table|table rows|mixed order|extraction fixture)\b/i.test(s),
+    missingHeadings:Object.keys(detectSections(s)).length<3,
+    dateAmbiguity:/\b(?:recent|earlier|present)\.?\s*$/im.test(s) && !/\b(?:19|20)\d{2}\b/.test(s)
+  };
+}
+
+function buildTakeaway(s,context,buzzCount,vagueCount,metricCount){
+  const low=s.toLowerCase(), p=detectTransitions(s), signals=buildArchetype(s,context).labels;
+  if(context==='current student'||context==='fresher') return metricCount>=3?'The resume has meaningful evidence beyond education; the key narrative test is whether projects, internships and activities point toward the same direction.':'For an emerging-career resume, the story has to come from education, projects, internships and activities. The checker should not judge the candidate from missing long-term experience.';
+  if(p.implicit) return `The resume contains more than one career-domain signal (${p.domains.join(', ')}). The useful question is whether the resume explicitly connects them.`;
+  if(signals.length) return `The clearest recurring professional signals are ${signals.join(' + ').toLowerCase()}. The report focuses on what the resume communicates, not a judgment about the person.`;
+  return 'The resume contains evidence, but the available text does not support a strong single narrative conclusion.';
+}
+function analyzeResume(s) {
+  const low=s.toLowerCase(), words=s.split(/\s+/).filter(Boolean).length, rawTimeline=extractTimeline(s), context=classifyContext(s,rawTimeline), timeline=detectTimeline(s,context), metrics=nums(s), skills=extractSkillEvidence(s);
+  const buzz=['leveraged','spearheaded','optimized','streamlined','facilitated','synergy','stakeholder','robust','strategic','transformative','actionable','seamless','dynamic','innovative'];
+  const vague=['responsible for','worked on','helped with','involved in','supported','participated in'];
+  const buzzCount=countWords(buzz,low), vagueCount=countWords(vague,low), sections=Object.keys(detectSections(s)), years=timeline.years;
+  const numberIssues=compareNumbers(s), transition=detectTransitions(s), archetype=buildArchetype(s,context), positioning=detectPositioningGap(s), parse=parseRisk(s);
+  const evidenceClaims=extractClaims(s), headline=extractHeadline(s);
+  const scores={'Story coherence':Math.max(50,Math.min(96,68+sections.length*3+(transition.domains.length<=2?8:0))), 'Evidence density':Math.max(45,Math.min(97,55+metrics.length*3+Math.min(12,evidenceClaims.length))), 'Consistency':Math.max(45,Math.min(96,92-numberIssues.length*12)), 'Specificity':Math.max(40,Math.min(96,72+metrics.length*2-vagueCount*4)), 'Signal clarity':Math.max(40,Math.min(95,70+(archetype.labels.length?12:0)-buzzCount*2))};
+  document.getElementById('scores').innerHTML='<h3>Signal snapshot</h3>'+Object.entries(scores).map(([k,v])=>`<div class="score"><div class="scoretop"><span>${escapeHtml(k)}</span><span>${v}</span></div><div class="bar"><div class="fill ${v>80?'good':v<65?'warn':''}" style="width:${v}%"></div></div></div>`).join('');
+  const issues=[];
+  if(numberIssues.length) issues.push(['red','Possible number inconsistency',`Different ${numberIssues[0].unit} figures appear in similar contexts. The checker only flags this when the surrounding context looks materially similar; different populations are not automatically contradictions.`]);
+  if(buzzCount>=5) issues.push(['purple','Corporate-language density',`Detected ${buzzCount} common corporate/AI-ish language signals. This is a writing-signal check, not an authorship detector.`]);
+  if(vagueCount>=2) issues.push(['purple','Low-evidence phrasing',`Found ${vagueCount} support-oriented or vague phrases. Review whether each bullet can make ownership, action and outcome explicit.`]);
+  if(metrics.length<4) issues.push(['','Limited quantified evidence',`Only ${metrics.length} measurable signals were detected. This is not a quality judgment; it means the checker has less concrete evidence to work with.`]);
+  if(transition.implicit) issues.push(['purple','Multiple career-domain signals',`The resume contains signals from ${transition.domains.join(', ')}. Consider whether the relationship is clear to a reader.`]);
+  if(positioning.gap) issues.push(['purple','Positioning ↔ evidence gap',`The stated positioning (${positioning.label}) is accompanied by evidence that reads more like ${positioning.evidence.join(', ')}. This is a positioning question, not a conclusion about capability.`]);
+  if(parse.mojibake) issues.push(['red','Parsing limitation', 'Some text appears corrupted or incorrectly decoded. Narrative conclusions may be unreliable until the source text is extracted cleanly.']);
+  else if(parse.layout) issues.push(['','Parsing/layout caution','The text contains layout or table markers. Treat chronology and section boundaries cautiously if this came from a PDF extraction.']);
+  if(parse.missingHeadings) issues.push(['','Limited section structure','Few conventional headings were detected. The checker will analyze what it can, but it will not invent section boundaries.']);
+  if(!issues.length) issues.push(['','No major heuristic issue','The current checks did not identify a high-confidence issue. This does not mean the resume is perfect; it means the evidence did not support a stronger flag.']);
+  document.getElementById('issues').innerHTML=issues.map(x=>`<div class="issue">${x[0]?`<span class="pill ${x[0]}">${x[0]==='red'?'CHECK':'SIGNAL'}</span>`:''}<b>${escapeHtml(x[1])}</b><p>${escapeHtml(x[2])}</p></div>`).join('');
+  const roles=extractRoleTitles(s);
+  document.getElementById('timeline').innerHTML=(roles.length?roles.slice(0,8):['Resume / career history']).map(r=>`<div class="role"><strong>${escapeHtml(r)}</strong><span>Detected from resume text</span></div>`).join('');
+  const story=transition.implicit?`The resume communicates a blend of ${transition.domains.join(', ')} signals. The main narrative question is whether the document explicitly explains how those strands connect.`:headline?`The resume presents a professional story through its stated summary/headline plus experience, skills and measurable evidence. The strongest interpretation is limited to what those sections actually support.`:'The available resume text does not provide enough narrative evidence for a strong interpretation.';
+  document.getElementById('story').textContent=story;
+  document.getElementById('evidence').innerHTML=[['Metrics extracted',metrics.length,metrics.slice(0,8).join(' • ')||'No obvious quantified signals'],['Approx. word count',words,'Useful for checking density, not quality'],['Sections detected',sections.length,sections.join(' • ')||'Could not identify standard headings'],['Date/year signals',years.length,[...new Set(years)].join(' • ')||'None detected'],['Skills with outside evidence',skills.filter(x=>x.evidenced).length,skills.filter(x=>x.evidenced).map(x=>x.skill).join(', ')||'None detected']].map(x=>`<div class="ev"><b>${escapeHtml(String(x[1]))}</b><small>${escapeHtml(x[0])}</small><small>${escapeHtml(x[2])}</small></div>`).join('');
+  renderConnections(s,context); document.getElementById('archetype').innerHTML=archetype.html; document.getElementById('voice').innerHTML=renderVoice(s); renderVerbs(s); renderBeyond(s); renderTransitions(s,context); document.getElementById('takeaway').textContent=buildTakeaway(s,context,buzzCount,vagueCount,metrics.length);
+  document.getElementById('aiish').textContent=`The prototype found ${buzzCount} common corporate-language signals and ${vagueCount} low-evidence phrases. This does not establish whether AI wrote the resume. It only checks whether the language may read as generic or heavily corporate.`;
+  document.getElementById('summary').textContent=`${words} words • ${metrics.length} measurable signals • ${issues.length} review points • ${context}`;
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, ch => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[ch]));
+}
+
+analyzeBtn.addEventListener('click', runAnalysis);
+demoBtn.addEventListener('click', loadDemo);
+</script>
+</body>
+</html>
