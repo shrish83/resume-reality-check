@@ -13,6 +13,7 @@
 .hidden{display:none}.results{margin-top:34px}.result-head{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:18px}.result-head h2{font-size:30px;letter-spacing:-.04em;margin:0}.result-head p{margin:4px 0;color:var(--muted)}.grid{display:grid;grid-template-columns:1.05fr 1fr;gap:18px}.scores{padding:24px}.scores h3,.issues h3,.story h3,.evidence h3{margin:0 0 18px;font-size:17px}.score{margin:16px 0}.scoretop{display:flex;justify-content:space-between;font-weight:700}.bar{height:8px;background:#edf0f5;border-radius:99px;margin-top:7px;overflow:hidden}.fill{height:100%;border-radius:99px;background:var(--accent)}.fill.good{background:var(--good)}.fill.warn{background:var(--warn)}.issues{padding:24px}.issue{padding:16px 0;border-top:1px solid var(--line)}.issue:first-of-type{border-top:0}.pill{font-size:11px;font-weight:800;padding:4px 8px;border-radius:99px;background:#fff2d9;color:#a46400;margin-right:7px}.pill.red{background:#ffe7e7;color:#a93e3e}.pill.purple{background:#eeeaff;color:#594bc8}.issue b{display:block;margin:8px 0 4px}.issue p{margin:0;color:var(--muted)}.wide{margin-top:18px;padding:26px}.storybox{background:#f8f7ff;border-radius:16px;padding:20px;border-left:4px solid var(--accent);margin-bottom:18px}.storybox p{margin:0}.timeline{display:flex;gap:0;overflow:auto;padding:8px 0 5px}.role{min-width:190px;padding:14px 20px 12px;border-top:3px solid #d9d6fb;position:relative}.role:before{content:"";width:9px;height:9px;background:var(--accent);border-radius:50%;position:absolute;top:-6px;left:0}.role strong{display:block}.role span{font-size:12px;color:var(--muted)}.evidence-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.ev{border:1px solid var(--line);border-radius:13px;padding:13px}.ev b{font-size:18px}.ev small{display:block;color:var(--muted);margin-top:3px}
 .section-kicker{font-size:11px;text-transform:uppercase;letter-spacing:.13em;color:var(--accent);font-weight:800;margin-bottom:6px}
 .signal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.privacy-card{background:linear-gradient(145deg,#fff,#faf9ff)}.privacy-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}.privacy-item{border:1px solid var(--line);border-radius:13px;padding:12px;background:#fff}.privacy-item b{display:block;font-size:18px}.privacy-item small{display:block;color:var(--muted);margin-top:2px}.beyond-list{display:grid;gap:9px}.beyond-item{border:1px solid var(--line);border-radius:13px;padding:12px;background:#fff}.beyond-item strong{display:block}.beyond-item span{display:block;color:var(--muted);font-size:13px;margin-top:3px}.voice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.voice-card{border:1px solid var(--line);border-radius:15px;padding:15px;background:#fcfcff}.voice-top{display:flex;justify-content:space-between;gap:8px;font-weight:750}.mini-bar{height:7px;background:#edf0f5;border-radius:99px;overflow:hidden;margin:9px 0 7px}.mini-bar i{display:block;height:100%;background:var(--accent);border-radius:99px}.voice-card p{margin:0;color:var(--muted);font-size:13px}.evidence-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}.evidence-tag{font-size:11px;padding:4px 7px;border-radius:99px;background:#eeeaff;color:#594bc8}.action-note{color:var(--muted);font-size:13px;margin:0 0 15px}.privacy-safe{color:var(--good);font-weight:700}
 .signal-card{border:1px solid var(--line);border-radius:15px;padding:16px;background:#fcfcff}
 .signal-card strong{display:block;font-size:15px;margin-bottom:5px}.signal-card p{margin:0;color:var(--muted);font-size:13px}
 .connect{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -24,7 +25,7 @@
 .verb-bar{height:7px;background:#edf0f5;border-radius:99px;overflow:hidden}.verb-bar i{display:block;height:100%;background:var(--accent);border-radius:99px}
 .archetype{display:flex;gap:12px;align-items:flex-start}.archetype-icon{font-size:25px}.archetype p{margin:3px 0 0;color:var(--muted)}
 .note{font-size:12px;color:var(--muted);margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
-@media(max-width:760px){.signal-grid,.connect,.verb-grid{grid-template-columns:1fr}}
+@media(max-width:760px){.signal-grid,.connect,.verb-grid,.voice-grid,.privacy-grid{grid-template-columns:1fr}}
 
 .footer{text-align:center;color:#8b93a5;font-size:12px;margin-top:30px}
 @media(max-width:760px){.grid,.evidence-list{grid-template-columns:1fr}.nav{margin-bottom:35px}.hero h1{font-size:44px}.container{padding:24px 14px 50px}}
@@ -57,6 +58,7 @@
 
 <section id="results" class="results hidden">
 <div class="result-head"><div><h2>Your resume, decoded.</h2><p id="summary"></p></div><button class="btn secondary" onclick="window.scrollTo({top:0,behavior:'smooth'})">Analyze another</button></div>
+<div class="card wide privacy-card"><div class="section-kicker">Privacy shield</div><h3>🔒 Personal details are not part of the analysis</h3><p id="privacySummary" style="margin:0;color:var(--muted)"></p><div id="privacyDetails" class="privacy-grid"></div><div class="note">The checker may detect contact or identifying details so they can be excluded from the report. It does not display phone numbers, email addresses, social URLs/handles, street addresses, or other sensitive identifiers in the results. Analysis runs in your browser in this static prototype.</div></div>
 <div class="grid">
 <div class="card scores" id="scores"></div>
 <div class="card issues"><h3>Things worth looking at</h3><div id="issues"></div></div>
@@ -70,7 +72,7 @@
 
 <div class="card wide"><div class="section-kicker">Action profile</div><h3>🛠️ What does your resume show you doing?</h3><div id="verbs" class="verb-grid"></div></div>
 
-<div class="card wide"><div class="section-kicker">Beyond the job title</div><h3>🌱 Projects, extracurriculars & interests</h3><div id="beyond" class="signal-grid"></div></div>
+<div class="card wide"><div class="section-kicker">Beyond the job title</div><h3>🌱 What else is shaping the professional story?</h3><p class="action-note">This section surfaces actual evidence outside the job-title line — projects, community activity, memberships, volunteering, certifications, awards and interests when they are present. It does not infer personality from hobbies.</p><div id="beyond" class="beyond-list"></div></div>
 
 <div class="card wide"><div class="section-kicker">Transitions</div><h3>🔄 Timeline & career changes</h3><div id="transitions"></div></div>
 
@@ -231,7 +233,8 @@ const SECTION_ALIASES = {
   skills:['skills','technical skills','core skills','competencies','tools'],
   projects:['projects','selected projects','academic projects','portfolio'],
   extracurricular:['extracurricular','activities','leadership','volunteering','community','associations','memberships'],
-  interests:['interests','hobbies']
+  interests:['interests','hobbies'],
+  awards:['awards','certifications','certificates','achievements','honors','honours']
 };
 
 function normalizeText(s){ return s.replace(/\u00a0/g,' ').replace(/[–—]/g,'-').replace(/\s+/g,' ').trim(); }
@@ -393,22 +396,89 @@ function connectionData(s,context){
     ['Headline ↔ evidence', target ? (transition.domains.length>1?'moderate':'strong'):'weak', transition.domains.length>1?'Multiple role/domain signals appear; check whether the headline explains the relationship rather than leaving the reader to infer it.':'The available headline/summary is relatively focused.']
   ];
 }
-function renderConnections(s,context){ document.getElementById('connections').innerHTML=connectionData(s,context).map(x=>`<div class="connect-card"><div class="status ${x[1]}">${x[1]}</div><b>${escapeHtml(x[0])}</b><p style="margin:5px 0 0;color:var(--muted);font-size:13px">${escapeHtml(x[2])}</p></div>`).join(''); }
-function renderVoice(s){
-  const low=s.toLowerCase();
-  const direct=countWords(['built','created','designed','led','owned','developed','launched','drove'],low);
-  const analytical=countWords(['analyzed','analysed','measured','evaluated','researched','identified','audited','tracked'],low);
-  const technical=countWords(['python','sql','tableau','power bi','excel','automation','api','machine learning','dashboard'],low);
-  return [['Direct / ownership',direct,direct>=4?'Ownership language is visible across the resume.':'Ownership language is present but limited.'],['Analytical',analytical,analytical>=3?'Analysis and measurement recur in the evidence.':'Analytical language is present but not dominant.'],['Technical',technical,technical>=4?'Tools and systems are a visible part of the professional signal.':'Technical language is relatively light.']].map(x=>`<div class="signal-card"><strong>${escapeHtml(x[0])}</strong><p>${escapeHtml(x[2])}</p></div>`).join('');
+function redactSensitive(text){
+  let x=String(text||'');
+  x=x.replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi,'[email omitted]');
+  x=x.replace(/(?:https?:\/\/|www\.)[^\s<>]+/gi,'[link omitted]');
+  x=x.replace(/(?:\+?\d[\d\s().-]{7,}\d)/g,'[phone omitted]');
+  x=x.replace(/(?<![A-Za-z0-9._%+-])@[A-Za-z0-9_][A-Za-z0-9_.-]{1,30}/g,'[handle omitted]');
+  x=x.replace(/(?:^|\s)(?:address|location|dob|date of birth|passport|national id|aadhaar|ssn|social security|salary|compensation|visa status|work authorization|citizenship|references?)\s*[:\-].*$/i,' [sensitive detail omitted]');
+  return x;
 }
-function renderVerbs(s){
-  const low=s.toLowerCase(), groups=[['Build / create',['built','created','developed','designed','implemented','launched']],['Analyze / research',['analyzed','analysed','evaluated','researched','measured','identified','audited']],['Lead / own',['led','owned','managed','directed','mentored','drove']],['Operate / coordinate',['coordinated','tracked','maintained','organized','supported']],['Improve / optimize',['optimized','improved','reduced','increased','streamlined','automated']]];
-  const counts=groups.map(g=>[g[0],g[1].reduce((n,w)=>n+countOccurrences(low,w),0)]), max=Math.max(1,...counts.map(x=>x[1]));
-  document.getElementById('verbs').innerHTML=counts.map(x=>`<div class="verb-row"><span>${escapeHtml(x[0])}</span><div class="verb-bar"><i style="width:${Math.round(x[1]/max*100)}%"></i></div><b>${x[1]}</b></div>`).join('');
+function detectPrivacy(s){
+  const email=[...s.matchAll(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi)].length;
+  const phone=[...s.matchAll(/(?:\+?\d[\d\s().-]{7,}\d)/g)].length;
+  const links=[...s.matchAll(/(?:https?:\/\/|www\.)[^\s<>]+/gi)].length;
+  const handles=[...s.matchAll(/(?<![A-Za-z0-9._%+-])@[A-Za-z0-9_][A-Za-z0-9_.-]{1,30}/g)].length;
+  const location=[...s.matchAll(/\b(?:location|based in|based at|address|city|country|postal code|zip code|\d{1,5}\s+[A-Za-z][A-Za-z .'-]+(?:street|st\.|road|rd\.|avenue|ave\.|lane|ln\.|drive|dr\.))\b/gi)].length;
+  const sensitiveTerms=[...s.matchAll(/\b(?:date of birth|dob|passport|national id|aadhaar|ssn|social security|marital status|visa status|work authorization|citizenship|salary|compensation|references?)\b/gi)].length;
+  return {email,phone,links,handles,location,sensitiveTerms};
+}
+function privacyLabel(n,singular,plural=singular+'s'){ return `${n} ${n===1?singular:plural}`; }
+function renderPrivacy(s){
+  const p=detectPrivacy(s);
+  const items=[['Email',p.email,'detected'],['Phone',p.phone,'detected'],['Links / URLs',p.links,'detected'],['Social handles',p.handles,'detected'],['Location / address',p.location,'signal(s)'],['Sensitive identifiers',p.sensitiveTerms,'signal(s)']];
+  document.getElementById('privacyDetails').innerHTML=items.map(x=>`<div class="privacy-item"><b>${x[1]}</b><small>${escapeHtml(x[0])} ${x[1]?'detected':'detected'}</small></div>`).join('');
+  const detected=items.filter(x=>x[1]>0);
+  document.getElementById('privacySummary').innerHTML=detected.length?`The checker detected <strong>${detected.map(x=>privacyLabel(x[1],x[0].toLowerCase().replace(/\s*\/.*$/,''))).join(', ')}</strong> and excludes those details from the reader-facing analysis.`:'No obvious contact or sensitive-identifier patterns were detected. Personal details are still excluded from generated evidence text where possible.';
+}
+function sectionItems(s,keys){
+  for(const key of keys){
+    const txt=sectionText(s,key); if(!txt) continue;
+    const lines=lineList(txt).map(redactSensitive).filter(Boolean);
+    if(lines.length) return lines.slice(0,8);
+  }
+  return [];
 }
 function renderBeyond(s){
-  const project=!!sectionText(s,'projects'), extra=!!sectionText(s,'extracurricular'), hobbies=!!sectionText(s,'interests');
-  document.getElementById('beyond').innerHTML=[['Projects',project,'Projects can provide career evidence when their problem, action and outcome are clear.'],['Community / extracurriculars',extra,'These can add evidence of initiative or collaboration when concrete activity is described.'],['Interests / hobbies',hobbies,'Interests are contextual signals only; the checker does not infer personality from them.']].map(x=>`<div class="signal-card"><strong>${x[0]} ${x[1]?'✓':'—'}</strong><p>${x[2]}</p></div>`).join('');
+  const project=sectionItems(s,['projects']);
+  const community=sectionItems(s,['extracurricular']);
+  const interests=sectionItems(s,['interests']);
+  const awards=sectionItems(s,['awards','certifications','certificates','achievements']);
+  const cards=[];
+  if(project.length) cards.push(['Projects',project,'Project evidence can show problems, actions and outcomes beyond formal roles.']);
+  if(community.length) cards.push(['Community / extracurriculars',community,'Concrete memberships, volunteering or leadership activity can add context beyond employment.']);
+  if(awards.length) cards.push(['Certifications / awards',awards,'These are shown as documented signals, without inferring capability from the credential alone.']);
+  if(interests.length) cards.push(['Interests / hobbies',interests,'Contextual only — the checker does not infer personality from interests.']);
+  if(!cards.length) cards.push(['Nothing outside the core sections detected',['Projects, activities, interests and other extras were not clearly detected.'],'The checker does not assume they are absent; they may be formatted in a way the parser cannot identify.']);
+  document.getElementById('beyond').innerHTML=cards.map(x=>`<div class="beyond-item"><strong>${escapeHtml(x[0])}</strong><div class="evidence-tags">${x[1].slice(0,8).map(v=>`<span class="evidence-tag">${escapeHtml(v.length>90?v.slice(0,87)+'…':v)}</span>`).join('')}</div><span>${escapeHtml(x[2])}</span></div>`).join('');
+}
+function renderVoice(s){
+  const low=s.toLowerCase();
+  const groups=[
+    ['Direct / ownership',['built','created','designed','led','owned','developed','launched','drove']],
+    ['Analytical',['analyzed','analysed','measured','evaluated','researched','identified','audited','tracked','forecasted']],
+    ['Technical',['python','sql','tableau','power bi','excel','automation','api','machine learning','dashboard','javascript']],
+    ['Collaborative',['collaborated','partnered','coordinated','cross-functional','stakeholder','facilitated','mentored']],
+    ['Commercial / customer',['client','customer','revenue','sales','renewal','account','commercial','negotiated']],
+    ['Strategic / decision',['strategy','strategic','roadmap','prioritized','prioritised','decision','planning','operating model']]
+  ];
+  const counts=groups.map(g=>[g[0],g[1].reduce((n,w)=>n+countOccurrences(low,w),0),g[1]]);
+  const max=Math.max(1,...counts.map(x=>x[1]));
+  const active=counts.filter(x=>x[1]>0);
+  document.getElementById('voice').className='voice-grid';
+  document.getElementById('voice').innerHTML=(active.length?active:counts.slice(0,3)).map(x=>{
+    const pct=Math.max(8,Math.round(x[1]/max*100));
+    const examples=x[2].filter(w=>countOccurrences(low,w)>0).slice(0,4);
+    const description=x[1]>=4?'A recurring language signal in the resume.':x[1]>=2?'Present in the resume, but not dominant.':'A light signal detected.';
+    return `<div class="voice-card"><div class="voice-top"><span>${escapeHtml(x[0])}</span><span>${x[1]}</span></div><div class="mini-bar"><i style="width:${pct}%"></i></div><p>${description}</p><div class="evidence-tags">${examples.map(e=>`<span class="evidence-tag">${escapeHtml(e)}</span>`).join('')}</div></div>`;
+  }).join('');
+}
+function renderConnections(s,context){ document.getElementById('connections').innerHTML=connectionData(s,context).map(x=>`<div class="connect-card"><div class="status ${x[1]}">${x[1]}</div><b>${escapeHtml(x[0])}</b><p style="margin:5px 0 0;color:var(--muted);font-size:13px">${escapeHtml(x[2])}</p></div>`).join(''); }
+function renderVerbs(s){
+  const low=s.toLowerCase(), groups=[
+    ['Build / create',['built','created','developed','designed','implemented','launched','deployed']],
+    ['Analyze / research',['analyzed','analysed','evaluated','researched','measured','identified','audited','forecasted']],
+    ['Lead / own',['led','owned','managed','directed','mentored','drove','chaired']],
+    ['Operate / coordinate',['coordinated','tracked','maintained','organized','organised','supported','administered','delivered']],
+    ['Improve / optimize',['optimized','optimised','improved','reduced','increased','streamlined','automated']],
+    ['Communicate / influence',['presented','communicated','facilitated','negotiated','influenced','trained','persuaded']],
+    ['Solve / decide',['resolved','solved','decided','prioritized','prioritised','recommended','diagnosed']],
+    ['Learn / explore',['learned','learnt','explored','experimented','researched','studied','tested']]
+  ];
+  const counts=groups.map(g=>[g[0],g[1].reduce((n,w)=>n+countOccurrences(low,w),0)]);
+  const max=Math.max(1,...counts.map(x=>x[1]));
+  document.getElementById('verbs').innerHTML='<p class="action-note">These are recurring action patterns detected from the language in the resume. The taxonomy is intentionally broad — it is not a claim that these are the only things a professional can do.</p>'+counts.map(x=>`<div class="verb-row"><span>${escapeHtml(x[0])}</span><div class="verb-bar"><i style="width:${Math.round(x[1]/max*100)}%"></i></div><b>${x[1]}</b></div>`).join('');
 }
 function renderTransitions(s,context){
   const t=detectTimeline(s,context), p=detectTransitions(s); let html='';
@@ -482,7 +552,7 @@ function analyzeResume(s) {
   const story=transition.implicit?`The resume communicates a blend of ${transition.domains.join(', ')} signals. The main narrative question is whether the document explicitly explains how those strands connect.`:headline?`The resume presents a professional story through its stated summary/headline plus experience, skills and measurable evidence. The strongest interpretation is limited to what those sections actually support.`:'The available resume text does not provide enough narrative evidence for a strong interpretation.';
   document.getElementById('story').textContent=story;
   document.getElementById('evidence').innerHTML=[['Metrics extracted',metrics.length,metrics.slice(0,8).join(' • ')||'No obvious quantified signals'],['Approx. word count',words,'Useful for checking density, not quality'],['Sections detected',sections.length,sections.join(' • ')||'Could not identify standard headings'],['Date/year signals',years.length,[...new Set(years)].join(' • ')||'None detected'],['Skills with outside evidence',skills.filter(x=>x.evidenced).length,skills.filter(x=>x.evidenced).map(x=>x.skill).join(', ')||'None detected']].map(x=>`<div class="ev"><b>${escapeHtml(String(x[1]))}</b><small>${escapeHtml(x[0])}</small><small>${escapeHtml(x[2])}</small></div>`).join('');
-  renderConnections(s,context); document.getElementById('archetype').innerHTML=archetype.html; document.getElementById('voice').innerHTML=renderVoice(s); renderVerbs(s); renderBeyond(s); renderTransitions(s,context); document.getElementById('takeaway').textContent=buildTakeaway(s,context,buzzCount,vagueCount,metrics.length);
+  renderPrivacy(s); renderConnections(s,context); document.getElementById('archetype').innerHTML=archetype.html; document.getElementById('voice').innerHTML=renderVoice(s); renderVerbs(s); renderBeyond(s); renderTransitions(s,context); document.getElementById('takeaway').textContent=buildTakeaway(s,context,buzzCount,vagueCount,metrics.length);
   document.getElementById('aiish').textContent=`The prototype found ${buzzCount} common corporate-language signals and ${vagueCount} low-evidence phrases. This does not establish whether AI wrote the resume. It only checks whether the language may read as generic or heavily corporate.`;
   document.getElementById('summary').textContent=`${words} words • ${metrics.length} measurable signals • ${issues.length} review points • ${context}`;
 }
