@@ -58,7 +58,7 @@
 
 <section id="results" class="results hidden">
 <div class="result-head"><div><h2>Your resume, decoded.</h2><p id="summary"></p></div><button class="btn secondary" onclick="window.scrollTo({top:0,behavior:'smooth'})">Analyze another</button></div>
-<div class="card wide privacy-card"><div class="section-kicker">Privacy shield</div><h3>🔒 Personal details are not part of the analysis</h3><p id="privacySummary" style="margin:0;color:var(--muted)"></p><div id="privacyDetails" class="privacy-grid"></div><div class="note">The checker may detect contact or identifying details so they can be excluded from the report. It does not display phone numbers, email addresses, social URLs/handles, street addresses, or other sensitive identifiers in the results. Analysis runs in your browser in this static prototype.</div></div>
+
 <div class="grid">
 <div class="card scores" id="scores"></div>
 <div class="card issues"><h3>Things worth looking at</h3><div id="issues"></div></div>
@@ -212,10 +212,10 @@ function loadDemo() {
 
 function runAnalysis() {
   try {
-    const s = text.value.trim();
-    if (s.length < 80) { setStatus('Paste or upload a little more resume text first.', 'error'); text.focus(); return; }
+    const raw = text.value.trim();
+    if (raw.length < 80) { setStatus('Paste or upload a little more resume text first.', 'error'); text.focus(); return; }
     setStatus('Analyzing your resume…');
-    analyzeResume(s);
+    analyzeResume(sanitizeForAnalysis(raw));
     document.getElementById('results').classList.remove('hidden');
     document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
     setStatus('Analysis complete.', 'success');
@@ -233,8 +233,13 @@ const SECTION_ALIASES = {
   skills:['skills','technical skills','core skills','competencies','tools'],
   projects:['projects','selected projects','academic projects','portfolio'],
   extracurricular:['extracurricular','activities','leadership','volunteering','community','associations','memberships'],
+  memberships:['memberships','associations','professional associations','affiliations'],
+  volunteering:['volunteering','volunteer work','community service'],
+  certifications:['certifications','certificates','professional certifications'],
+  publications:['publications','papers','research publications'],
+  languages:['languages','language skills'],
   interests:['interests','hobbies'],
-  awards:['awards','certifications','certificates','achievements','honors','honours']
+  awards:['awards','achievements','honors','honours']
 };
 
 function normalizeText(s){ return s.replace(/\u00a0/g,' ').replace(/[–—]/g,'-').replace(/\s+/g,' ').trim(); }
@@ -402,8 +407,16 @@ function redactSensitive(text){
   x=x.replace(/(?:https?:\/\/|www\.)[^\s<>]+/gi,'[link omitted]');
   x=x.replace(/(?:\+?\d[\d\s().-]{7,}\d)/g,'[phone omitted]');
   x=x.replace(/(?<![A-Za-z0-9._%+-])@[A-Za-z0-9_][A-Za-z0-9_.-]{1,30}/g,'[handle omitted]');
-  x=x.replace(/(?:^|\s)(?:address|location|dob|date of birth|passport|national id|aadhaar|ssn|social security|salary|compensation|visa status|work authorization|citizenship|references?)\s*[:\-].*$/i,' [sensitive detail omitted]');
+  x=x.replace(/(?:^|\s)(?:address|home address|location|based in|based at|dob|date of birth|passport|national id|aadhaar|aadhar|ssn|social security|marital status|visa status|work authorization|citizenship|salary|compensation|references?)\s*[:\-].*$/gim,' [personal detail omitted]');
+  x=x.replace(/\b(?:aadhaar|aadhar)\s*(?:no\.?|number|#)?\s*[:\-]?\s*\d{4}\s*\d{4}\s*\d{4}\b/gi,'[government id omitted]');
+  x=x.replace(/\b\d{3}[- ]\d{2}[- ]\d{4}\b/g,'[government id omitted]');
   return x;
+}
+function sanitizeForAnalysis(text){
+  return String(text||'').split(/\r?\n/).map(line=>{
+    if(/^(?:address|home address|location|based in|based at|dob|date of birth|passport|national id|aadhaar|aadhar|ssn|social security|marital status|visa status|work authorization|citizenship|salary|compensation|references?)\s*[:\-]/i.test(line.trim())) return '[personal detail omitted]';
+    return redactSensitive(line);
+  }).join('\n');
 }
 function detectPrivacy(s){
   const email=[...s.matchAll(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi)].length;
@@ -422,45 +435,62 @@ function renderPrivacy(s){
   const detected=items.filter(x=>x[1]>0);
   document.getElementById('privacySummary').innerHTML=detected.length?`The checker detected <strong>${detected.map(x=>privacyLabel(x[1],x[0].toLowerCase().replace(/\s*\/.*$/,''))).join(', ')}</strong> and excludes those details from the reader-facing analysis.`:'No obvious contact or sensitive-identifier patterns were detected. Personal details are still excluded from generated evidence text where possible.';
 }
-function sectionItems(s,keys){
-  for(const key of keys){
-    const txt=sectionText(s,key); if(!txt) continue;
-    const lines=lineList(txt).map(redactSensitive).filter(Boolean);
-    if(lines.length) return lines.slice(0,8);
+function findSectionText(s,keys){
+  for(const key of keys){ const txt=sectionText(s,key); if(txt) return {key,text:txt}; }
+  return {key:null,text:''};
+}
+function fallbackBeyond(s){
+  const lines=lineList(s).map(redactSensitive), buckets={Projects:[], 'Community / extracurriculars':[], 'Certifications / awards':[], 'Publications / research':[], 'Hackathons / competitions':[], Languages:[], 'Interests / hobbies':[]};
+  for(const line of lines){
+    if(/\b(project|capstone|case study|portfolio|prototype)\b/i.test(line)) buckets.Projects.push(line);
+    else if(/\b(volunteer|volunteering|community|membership|memberships|association|associations|chapter|chapters|society|societies|club|clubs|extracurricular|student organization|student activity|hackathon|hackathons|competition|competitions|case competition|mentor|mentoring|conference|conferences)\b/i.test(line)) buckets['Community / extracurriculars'].push(line);
+    else if(/\b(certif|certified|award|honou?r|achievement|credential)\b/i.test(line)) buckets['Certifications / awards'].push(line);
+    else if(/\b(publication|published|paper|research)\b/i.test(line)) buckets['Publications / research'].push(line);
+    else if(/\b(hackathon|hackathons|competition|competitions|case competition|challenge)\b/i.test(line)) buckets['Hackathons / competitions'].push(line);
+    else if(/^languages?\s*:/i.test(line)) buckets.Languages.push(line);
+    else if(/^(?:hobbies?|interests?)\s*:/i.test(line)) buckets['Interests / hobbies'].push(line);
   }
-  return [];
+  return Object.entries(buckets).filter(([,v])=>v.length).map(([k,v])=>[k,v.slice(0,8)]);
+}
+function sectionItems(s,keys){
+  const found=findSectionText(s,keys); if(!found.text) return [];
+  return lineList(found.text).map(redactSensitive).filter(Boolean).slice(0,8);
 }
 function renderBeyond(s){
-  const project=sectionItems(s,['projects']);
-  const community=sectionItems(s,['extracurricular']);
-  const interests=sectionItems(s,['interests']);
-  const awards=sectionItems(s,['awards','certifications','certificates','achievements']);
   const cards=[];
-  if(project.length) cards.push(['Projects',project,'Project evidence can show problems, actions and outcomes beyond formal roles.']);
-  if(community.length) cards.push(['Community / extracurriculars',community,'Concrete memberships, volunteering or leadership activity can add context beyond employment.']);
-  if(awards.length) cards.push(['Certifications / awards',awards,'These are shown as documented signals, without inferring capability from the credential alone.']);
-  if(interests.length) cards.push(['Interests / hobbies',interests,'Contextual only — the checker does not infer personality from interests.']);
-  if(!cards.length) cards.push(['Nothing outside the core sections detected',['Projects, activities, interests and other extras were not clearly detected.'],'The checker does not assume they are absent; they may be formatted in a way the parser cannot identify.']);
-  document.getElementById('beyond').innerHTML=cards.map(x=>`<div class="beyond-item"><strong>${escapeHtml(x[0])}</strong><div class="evidence-tags">${x[1].slice(0,8).map(v=>`<span class="evidence-tag">${escapeHtml(v.length>90?v.slice(0,87)+'…':v)}</span>`).join('')}</div><span>${escapeHtml(x[2])}</span></div>`).join('');
+  const groups=[
+    ['Projects',['projects'],'Project evidence can show problems, actions and outcomes beyond formal roles.'],
+    ['Community / extracurriculars',['extracurricular','memberships','membership','volunteering','volunteer','community','activities','activity','clubs','club','societies','society','associations','association','chapters','chapter','student organizations','student organizations','student activities'],'Memberships, volunteering, community involvement and extracurricular activity can add context beyond employment.'],
+    ['Certifications / awards',['certifications','certification','awards','award','honors','honours','achievements','achievement','credentials'],'These are shown as documented signals, without inferring capability from the credential alone.'],
+    ['Publications / research',['publications','publication','research','papers','paper','presentations','presentation'],'Research or published work can provide additional evidence of expertise or interests.'],
+    ['Languages',['languages'],'Languages are shown as stated resume information; no proficiency is inferred.'],
+    ['Hackathons / competitions',['hackathons','hackathon','competitions','competition','case competitions','case competition','challenges','challenge'],'These can show initiative, problem-solving or participation when the resume provides concrete evidence.'],
+    ['Interests / hobbies',['interests','hobbies','hobby','passions','passion'],'Contextual only — the checker does not infer personality from interests.']
+  ];
+  groups.forEach(([label,keys,note])=>{ const items=sectionItems(s,keys); if(items.length) cards.push([label,items,note]); });
+  if(!cards.length) fallbackBeyond(s).forEach(([label,items])=>cards.push([label,items,'Detected from resume text even though a conventional section heading was not clearly identified.']));
+  if(!cards.length) cards.push(['Nothing outside the core sections detected',['No clearly identifiable projects, activities, credentials, publications, languages or interests were found.'],'The checker does not assume they are absent; they may be formatted in a way the parser cannot identify.']);
+  document.getElementById('beyond').innerHTML=cards.map(x=>`<div class="beyond-item"><strong>${escapeHtml(x[0])}</strong><div class="evidence-tags">${x[1].slice(0,8).map(v=>`<span class="evidence-tag">${escapeHtml(v.length>120?v.slice(0,117)+'…':v)}</span>`).join('')}</div><span>${escapeHtml(x[2])}</span></div>`).join('');
 }
 function renderVoice(s){
   const low=s.toLowerCase();
   const groups=[
-    ['Direct / ownership',['built','created','designed','led','owned','developed','launched','drove']],
-    ['Analytical',['analyzed','analysed','measured','evaluated','researched','identified','audited','tracked','forecasted']],
-    ['Technical',['python','sql','tableau','power bi','excel','automation','api','machine learning','dashboard','javascript']],
-    ['Collaborative',['collaborated','partnered','coordinated','cross-functional','stakeholder','facilitated','mentored']],
-    ['Commercial / customer',['client','customer','revenue','sales','renewal','account','commercial','negotiated']],
-    ['Strategic / decision',['strategy','strategic','roadmap','prioritized','prioritised','decision','planning','operating model']]
+    ['Direct / ownership',['built','created','designed','led','owned','developed','launched','drove','accountable']],
+    ['Analytical',['analyzed','analysed','measured','evaluated','researched','identified','audited','tracked','forecasted','quantified']],
+    ['Technical',['python','sql','tableau','power bi','excel','automation','api','machine learning','dashboard','javascript','java','r','coding']],
+    ['Collaborative',['collaborated','partnered','coordinated','cross-functional','stakeholder','facilitated','mentored','worked with']],
+    ['Commercial / customer',['client','customer','revenue','sales','renewal','account','commercial','negotiated','contract']],
+    ['Strategic / decision',['strategy','strategic','roadmap','prioritized','prioritised','decision','planning','operating model','recommended']],
+    ['Improvement / change',['improved','optimized','optimised','streamlined','automated','reduced','increased','transformed']],
+    ['Communication / influence',['presented','communicated','influenced','persuaded','trained','wrote','authored','facilitated']]
   ];
-  const counts=groups.map(g=>[g[0],g[1].reduce((n,w)=>n+countOccurrences(low,w),0),g[1]]);
+  const counts=groups.map(g=>[g[0],g[1].reduce((n,w)=>n+countOccurrences(low,w),0),g[1]]).filter(x=>x[1]>0);
   const max=Math.max(1,...counts.map(x=>x[1]));
-  const active=counts.filter(x=>x[1]>0);
   document.getElementById('voice').className='voice-grid';
-  document.getElementById('voice').innerHTML=(active.length?active:counts.slice(0,3)).map(x=>{
-    const pct=Math.max(8,Math.round(x[1]/max*100));
-    const examples=x[2].filter(w=>countOccurrences(low,w)>0).slice(0,4);
-    const description=x[1]>=4?'A recurring language signal in the resume.':x[1]>=2?'Present in the resume, but not dominant.':'A light signal detected.';
+  document.getElementById('voice').innerHTML=(counts.length?counts:groups.slice(0,3).map(g=>[g[0],0,g[1]])).map(x=>{
+    const pct=x[1]?Math.max(8,Math.round(x[1]/max*100)):8;
+    const examples=x[2].filter(w=>countOccurrences(low,w)>0).slice(0,5);
+    const description=x[1]>=4?'A recurring language signal in the resume.':x[1]>=2?'Present in the resume, but not dominant.':x[1]===1?'A light signal detected.':'No clear signal detected.';
     return `<div class="voice-card"><div class="voice-top"><span>${escapeHtml(x[0])}</span><span>${x[1]}</span></div><div class="mini-bar"><i style="width:${pct}%"></i></div><p>${description}</p><div class="evidence-tags">${examples.map(e=>`<span class="evidence-tag">${escapeHtml(e)}</span>`).join('')}</div></div>`;
   }).join('');
 }
@@ -468,17 +498,21 @@ function renderConnections(s,context){ document.getElementById('connections').in
 function renderVerbs(s){
   const low=s.toLowerCase(), groups=[
     ['Build / create',['built','created','developed','designed','implemented','launched','deployed']],
-    ['Analyze / research',['analyzed','analysed','evaluated','researched','measured','identified','audited','forecasted']],
-    ['Lead / own',['led','owned','managed','directed','mentored','drove','chaired']],
-    ['Operate / coordinate',['coordinated','tracked','maintained','organized','organised','supported','administered','delivered']],
+    ['Analyze / research',['analyzed','analysed','evaluated','researched','measured','identified','audited','forecasted','investigated']],
+    ['Lead / own',['led','owned','managed','directed','mentored','drove','chaired','accountable']],
+    ['Operate / coordinate',['coordinated','tracked','maintained','organized','organised','supported','administered','delivered','executed']],
     ['Improve / optimize',['optimized','optimised','improved','reduced','increased','streamlined','automated']],
-    ['Communicate / influence',['presented','communicated','facilitated','negotiated','influenced','trained','persuaded']],
-    ['Solve / decide',['resolved','solved','decided','prioritized','prioritised','recommended','diagnosed']],
-    ['Learn / explore',['learned','learnt','explored','experimented','researched','studied','tested']]
+    ['Communicate / influence',['presented','communicated','facilitated','negotiated','influenced','trained','persuaded','wrote','authored']],
+    ['Solve / decide',['resolved','solved','decided','prioritized','prioritised','recommended','diagnosed','assessed']],
+    ['Learn / explore',['learned','learnt','explored','experimented','studied','tested','prototyped']],
+    ['Plan / strategize',['strategized','forecasted','roadmapped','prioritized','planned']],
+    ['Sell / grow',['sold','grew','generated','won','acquired','renewed','expanded','upsold']],
+    ['Serve / support',['supported','served','advised','helped','assisted','enabled','trained']],
+    ['Govern / assure',['governed','audited','validated','complied','controlled','assured','reviewed','monitored']]
   ];
-  const counts=groups.map(g=>[g[0],g[1].reduce((n,w)=>n+countOccurrences(low,w),0)]);
+  const counts=groups.map(g=>[g[0],g[1].reduce((n,w)=>n+countOccurrences(low,w),0)]).filter(x=>x[1]>0);
   const max=Math.max(1,...counts.map(x=>x[1]));
-  document.getElementById('verbs').innerHTML='<p class="action-note">These are recurring action patterns detected from the language in the resume. The taxonomy is intentionally broad — it is not a claim that these are the only things a professional can do.</p>'+counts.map(x=>`<div class="verb-row"><span>${escapeHtml(x[0])}</span><div class="verb-bar"><i style="width:${Math.round(x[1]/max*100)}%"></i></div><b>${x[1]}</b></div>`).join('');
+  document.getElementById('verbs').innerHTML='<p class="action-note">These are recurring action patterns detected from the resume. The categories are a flexible vocabulary, not a complete list of everything a professional can do. Only categories with evidence are shown.</p>'+(counts.length?counts.map(x=>`<div class="verb-row"><span>${escapeHtml(x[0])}</span><div class="verb-bar"><i style="width:${Math.round(x[1]/max*100)}%"></i></div><b>${x[1]}</b></div>`).join(''):'<p style="color:var(--muted)">No recognized action language was detected.</p>');
 }
 function renderTransitions(s,context){
   const t=detectTimeline(s,context), p=detectTransitions(s); let html='';
@@ -552,7 +586,7 @@ function analyzeResume(s) {
   const story=transition.implicit?`The resume communicates a blend of ${transition.domains.join(', ')} signals. The main narrative question is whether the document explicitly explains how those strands connect.`:headline?`The resume presents a professional story through its stated summary/headline plus experience, skills and measurable evidence. The strongest interpretation is limited to what those sections actually support.`:'The available resume text does not provide enough narrative evidence for a strong interpretation.';
   document.getElementById('story').textContent=story;
   document.getElementById('evidence').innerHTML=[['Metrics extracted',metrics.length,metrics.slice(0,8).join(' • ')||'No obvious quantified signals'],['Approx. word count',words,'Useful for checking density, not quality'],['Sections detected',sections.length,sections.join(' • ')||'Could not identify standard headings'],['Date/year signals',years.length,[...new Set(years)].join(' • ')||'None detected'],['Skills with outside evidence',skills.filter(x=>x.evidenced).length,skills.filter(x=>x.evidenced).map(x=>x.skill).join(', ')||'None detected']].map(x=>`<div class="ev"><b>${escapeHtml(String(x[1]))}</b><small>${escapeHtml(x[0])}</small><small>${escapeHtml(x[2])}</small></div>`).join('');
-  renderPrivacy(s); renderConnections(s,context); document.getElementById('archetype').innerHTML=archetype.html; document.getElementById('voice').innerHTML=renderVoice(s); renderVerbs(s); renderBeyond(s); renderTransitions(s,context); document.getElementById('takeaway').textContent=buildTakeaway(s,context,buzzCount,vagueCount,metrics.length);
+  renderConnections(s,context); document.getElementById('archetype').innerHTML=archetype.html; renderVoice(s); renderVerbs(s); renderBeyond(s); renderTransitions(s,context); document.getElementById('takeaway').textContent=buildTakeaway(s,context,buzzCount,vagueCount,metrics.length);
   document.getElementById('aiish').textContent=`The prototype found ${buzzCount} common corporate-language signals and ${vagueCount} low-evidence phrases. This does not establish whether AI wrote the resume. It only checks whether the language may read as generic or heavily corporate.`;
   document.getElementById('summary').textContent=`${words} words • ${metrics.length} measurable signals • ${issues.length} review points • ${context}`;
 }
