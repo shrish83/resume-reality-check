@@ -72,7 +72,7 @@
 
 <div class="card wide"><div class="section-kicker">Action profile</div><h3>🛠️ What does your resume show you doing?</h3><div id="verbs" class="verb-grid"></div></div>
 
-<div class="card wide"><div class="section-kicker">Beyond the job title</div><h3>🌱 What else is shaping the professional story?</h3><p class="action-note">This section surfaces actual evidence outside the job-title line — projects, community activity, memberships, volunteering, certifications, awards and interests when they are present. It does not infer personality from hobbies.</p><div id="beyond" class="beyond-list"></div></div>
+<div class="card wide"><div class="section-kicker">Beyond the job title</div><h3>🌱 What else is shaping the professional story?</h3><p class="action-note">This section surfaces professional evidence outside the job-title line — projects, professional communities, memberships, volunteering, hackathons, certifications, awards, research and other career-relevant activity. Personal/contact details are not used here.</p><div id="beyond" class="beyond-list"></div></div>
 
 <div class="card wide"><div class="section-kicker">Transitions</div><h3>🔄 Timeline & career changes</h3><div id="transitions"></div></div>
 
@@ -440,15 +440,13 @@ function findSectionText(s,keys){
   return {key:null,text:''};
 }
 function fallbackBeyond(s){
-  const lines=lineList(s).map(redactSensitive), buckets={Projects:[], 'Community / extracurriculars':[], 'Certifications / awards':[], 'Publications / research':[], 'Hackathons / competitions':[], Languages:[], 'Interests / hobbies':[]};
+  const lines=lineList(s).map(redactSensitive).filter(line=>!/(?:\[email omitted\]|\[phone omitted\]|\[link omitted\]|\[handle omitted\]|\[personal detail omitted\]|\[government id omitted\])/i.test(line)), buckets={Projects:[], 'Community / extracurriculars':[], 'Certifications / awards':[], 'Publications / research':[], 'Hackathons / competitions':[]};
   for(const line of lines){
     if(/\b(project|capstone|case study|portfolio|prototype)\b/i.test(line)) buckets.Projects.push(line);
     else if(/\b(volunteer|volunteering|community|membership|memberships|association|associations|chapter|chapters|society|societies|club|clubs|extracurricular|student organization|student activity|hackathon|hackathons|competition|competitions|case competition|mentor|mentoring|conference|conferences)\b/i.test(line)) buckets['Community / extracurriculars'].push(line);
     else if(/\b(certif|certified|award|honou?r|achievement|credential)\b/i.test(line)) buckets['Certifications / awards'].push(line);
     else if(/\b(publication|published|paper|research)\b/i.test(line)) buckets['Publications / research'].push(line);
     else if(/\b(hackathon|hackathons|competition|competitions|case competition|challenge)\b/i.test(line)) buckets['Hackathons / competitions'].push(line);
-    else if(/^languages?\s*:/i.test(line)) buckets.Languages.push(line);
-    else if(/^(?:hobbies?|interests?)\s*:/i.test(line)) buckets['Interests / hobbies'].push(line);
   }
   return Object.entries(buckets).filter(([,v])=>v.length).map(([k,v])=>[k,v.slice(0,8)]);
 }
@@ -463,13 +461,11 @@ function renderBeyond(s){
     ['Community / extracurriculars',['extracurricular','memberships','membership','volunteering','volunteer','community','activities','activity','clubs','club','societies','society','associations','association','chapters','chapter','student organizations','student organizations','student activities'],'Memberships, volunteering, community involvement and extracurricular activity can add context beyond employment.'],
     ['Certifications / awards',['certifications','certification','awards','award','honors','honours','achievements','achievement','credentials'],'These are shown as documented signals, without inferring capability from the credential alone.'],
     ['Publications / research',['publications','publication','research','papers','paper','presentations','presentation'],'Research or published work can provide additional evidence of expertise or interests.'],
-    ['Languages',['languages'],'Languages are shown as stated resume information; no proficiency is inferred.'],
     ['Hackathons / competitions',['hackathons','hackathon','competitions','competition','case competitions','case competition','challenges','challenge'],'These can show initiative, problem-solving or participation when the resume provides concrete evidence.'],
-    ['Interests / hobbies',['interests','hobbies','hobby','passions','passion'],'Contextual only — the checker does not infer personality from interests.']
   ];
   groups.forEach(([label,keys,note])=>{ const items=sectionItems(s,keys); if(items.length) cards.push([label,items,note]); });
   if(!cards.length) fallbackBeyond(s).forEach(([label,items])=>cards.push([label,items,'Detected from resume text even though a conventional section heading was not clearly identified.']));
-  if(!cards.length) cards.push(['Nothing outside the core sections detected',['No clearly identifiable projects, activities, credentials, publications, languages or interests were found.'],'The checker does not assume they are absent; they may be formatted in a way the parser cannot identify.']);
+  if(!cards.length) cards.push(['Nothing outside the core sections detected',['No clearly identifiable professional projects, activities, credentials, research or competitions were found.'],'The checker does not assume they are absent; they may be formatted in a way the parser cannot identify.']);
   document.getElementById('beyond').innerHTML=cards.map(x=>`<div class="beyond-item"><strong>${escapeHtml(x[0])}</strong><div class="evidence-tags">${x[1].slice(0,8).map(v=>`<span class="evidence-tag">${escapeHtml(v.length>120?v.slice(0,117)+'…':v)}</span>`).join('')}</div><span>${escapeHtml(x[2])}</span></div>`).join('');
 }
 function renderVoice(s){
