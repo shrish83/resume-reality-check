@@ -1,531 +1,778 @@
-# Resume Reality Check
+Resume Reality Check
 
-### Does your resume actually make sense?
+Does your resume actually make sense?
 
-**Resume Reality Check** is an AI-assisted resume analysis tool that looks beyond grammar and ATS keywords to examine the **story a resume tells**.
+Resume Reality Check is an AI-assisted resume analysis tool that looks beyond grammar and ATS keywords to examine the professional story a resume communicates.
 
-Instead of automatically rewriting a resume, it diagnoses how the document may be interpreted by a reader — looking at career progression, evidence, professional signals, timeline, positioning, quantified claims, and language.
+Instead of automatically rewriting a resume, the tool asks:
 
-> **Diagnose. Don't automatically rewrite.**
----
+What does this resume actually communicate to a reader?
 
-## Why I built this
+It analyzes evidence, career progression, transitions, projects, education, professional signals, language, and other activities to identify where the story is clear, where it is ambiguous, and what could be made more explicit.
+
+Why I Built This
 
 Most resume tools focus on questions like:
 
-* Is my resume ATS-friendly?
-* Do I have enough keywords?
-* Can this bullet be rewritten?
-* How can I make this sound more impressive?
+Does this resume contain the right keywords?
 
-Those are useful questions, but they miss a bigger one:
+Is it ATS-friendly?
 
-### **Does the resume actually tell a coherent professional story?**
+Are there grammar issues?
 
-A resume can have:
+Can the bullet points be rewritten?
 
-* strong experience but weak positioning
-* impressive projects that don't connect to the career direction
-* skills that aren't supported by evidence
-* unexplained timeline periods
-* quantified claims that appear inconsistent
-* a mismatch between the headline and the experience
-* generic corporate language that makes the document feel interchangeable
-* multiple professional signals that don't fit neatly into one label
+Those are useful questions, but they don't fully answer a more important one:
 
-Resume Reality Check was designed to explore those questions.
+What professional profile does this resume actually communicate?
 
----
+A resume can contain strong experiences and still leave a reader unclear about:
 
-# What it analyzes
+how the candidate's career has evolved
 
-## 1. Professional context
+what connects their different experiences
 
-The analyzer first tries to understand the type of career story being presented.
+whether their skills are supported by evidence
 
-Examples include:
+what their projects contribute to their professional story
 
-* Student / current graduate
-* Fresh graduate
-* Early-career professional
-* Experienced professional
-* Career changer
+whether their education connects to their work
 
-The goal is to interpret other signals in context rather than applying the same rules to every resume.
+what signals come from activities outside employment
 
----
+what a reader is likely to understand immediately
 
-## 2. Career timeline
+what remains unclear or insufficiently evidenced
 
-The tool looks at dates, roles, education and transitions to identify things worth examining.
+Resume Reality Check was designed around this problem.
 
-It distinguishes between concepts such as:
+What It Analyzes
 
-* Potential unexplained timeline gaps
-* Career breaks
-* Sabbaticals
-* Education periods
-* Overlapping roles
-* Career transitions
+1. Career narrative
 
-Importantly, a missing period is **not automatically treated as a problem**.
+What story does the resume tell across roles, education, projects, and other experiences?
 
-The tool uses language such as:
+2. Timeline
 
-> "Potential unexplained timeline gap"
+Looks at chronology, potential gaps, overlapping roles, transitions, and progression without inventing explanations for ambiguous periods.
 
-rather than assuming why the gap exists.
+3. Evidence
 
----
+Looks for concrete evidence behind claims, including metrics, outcomes, actions, measurable results, and repeated evidence.
 
-## 3. Skills ↔ evidence
+4. Skills vs. evidence
 
-A Skills section can contain a long list of technologies and capabilities.
+Looks at whether important capabilities listed on the resume are actually supported elsewhere by experience or outcomes.
 
-But listing a skill isn't the same as demonstrating it.
+5. Projects
 
-The analyzer therefore looks for evidence elsewhere in the resume:
+Considers how projects contribute to the professional story, particularly for students, fresh graduates, career changers, technical professionals, and portfolio-based careers.
 
-```text
-Skill
-  ↓
-Where does it appear?
-  ↓
-Work experience?
-Project?
-Education?
-Other evidence?
-```
+6. Education
 
-This helps distinguish between:
+Considers connections between education, work experience, projects, and career direction without assuming that an unrelated degree is a problem.
 
-**"Skill is listed"**
+7. Beyond the job title
 
-and
+Looks for signals from projects, memberships, clubs, societies, volunteering, communities, hackathons, competitions, fellowships, scholarships, certifications, awards, research, publications, conferences, meetups, mentoring, and speaking.
 
-**"Skill is supported by evidence."**
+8. Professional signals
 
----
+Identifies signals communicated by the document, such as analysis, building, execution, operations, leadership, experimentation, expertise, achievement, and transformation.
 
-## 4. Projects ↔ career direction
+These describe the resume, not the person's personality.
 
-Projects can play very different roles depending on the person.
+9. Professional archetype
 
-For example:
+Uses six work archetypes from James Root's The Archetype Effect as a document-level communication lens:
 
-* A student's project may provide important evidence of capability.
-* A career changer may use projects to demonstrate a new direction.
-* An experienced professional may use projects to reinforce an existing specialization.
+Giver
 
-The analyzer therefore considers projects in the context of the overall resume rather than treating their mere presence as evidence.
-
----
-
-## 5. Professional signals
-
-Instead of forcing someone into a single career label, Resume Reality Check looks for multiple possible professional signals:
-
-| Signal       | What it represents                                            |
-| ------------ | ------------------------------------------------------------- |
-| **Analyst**  | Analysis, metrics, insights and decision support              |
-| **Builder**  | Creating systems, products, automation or technical solutions |
-| **Operator** | Processes, execution, optimization and operational ownership  |
-| **Leader**   | Ownership, coordination, influence and decision-making        |
-
-A resume can communicate more than one signal.
-
-For example:
-
-> **Analyst + Builder + Operator**
-
-may be a more accurate description of the evidence than forcing the resume into one category.
-
-These are **signals communicated by the resume**, not psychological or personality assessments.
-
----
-
-## 6. Positioning ↔ evidence
-
-The analyzer checks whether the positioning of the resume is supported by the experience underneath it.
-
-For example:
-
-```text
-Headline:
-Product Manager
-
-Experience:
-Mostly data analysis and reporting
-```
-
-This doesn't mean the person *cannot* be a Product Manager.
-
-It means the resume may not yet provide enough evidence for the positioning it is using.
-
-The distinction matters.
-
----
-
-## 7. Quantified claims
-
-Numbers are powerful on resumes, but they can also create ambiguity.
-
-Resume Reality Check looks for potentially inconsistent quantified claims while considering context.
-
-For example:
-
-```text
-800+ customers annually
-850+ internal stakeholders
-```
-
-should not automatically be considered contradictory because the populations are different.
-
-The tool therefore aims to distinguish:
-
-* genuine potential inconsistencies
-* repeated metrics
-* approximate numbers
-* different populations
-* contextual differences
-
----
-
-## 8. Professional voice
-
-The tool also looks for language patterns such as:
-
-* Generic corporate language
-* Vague phrasing
-* Repetitive action verbs
-* Highly polished / templated language
-* Specific and evidence-based language
-
-### What it does NOT do
-
-It does **not** claim to detect whether a resume was written by AI.
-
-"AI-ish" language is treated as a **style signal**, not authorship evidence.
-
----
-
-# The reasoning architecture
-
-The first version of the checker started as a collection of heuristic checks.
-
-Testing it against a larger set of resume scenarios exposed an important problem:
-
-> Resume analysis cannot reliably be reduced to keyword matching.
-
-The current architecture therefore separates the analysis into layers:
-
-```text
-Resume
-   │
-   ▼
-┌─────────────────────┐
-│  Parsing            │
-│  Sections / Dates   │
-│  Extraction signals │
-└──────────┬──────────┘
-           ▼
-┌─────────────────────┐
-│  Evidence           │
-│  Skills / Claims    │
-│  Metrics / Projects │
-└──────────┬──────────┘
-           ▼
-┌─────────────────────┐
-│  Timeline Model     │
-│  Roles / Gaps       │
-│  Breaks / Pivots    │
-└──────────┬──────────┘
-           ▼
-┌─────────────────────┐
-│  Narrative Model    │
-│  Positioning        │
-│  Career Direction   │
-│  Evidence Links     │
-└──────────┬──────────┘
-           ▼
-┌─────────────────────┐
-│ Professional Signals│
-│ Analyst / Builder   │
-│ Operator / Leader   │
-└──────────┬──────────┘
-           ▼
-┌─────────────────────┐
-│ Language Analysis   │
-│ Voice / Genericity  │
-└──────────┬──────────┘
-           ▼
-┌─────────────────────┐
-│ Guardrails          │
-│ Ambiguous / Missing │
-│ Confidence          │
-└──────────┬──────────┘
-           ▼
-      Reader-facing
-         report
-```
-
-The separation is intentional: **evidence extraction comes before interpretation**.
-
----
-
-# Evaluation-driven development
-
-A major part of the project was building an evaluation corpus before continuing to add heuristics.
-
-The corpus contains **75 controlled resume scenarios**, covering different career types and adversarial cases.
-
-### Career archetypes
-
-Examples include:
-
-* Fresh graduates
-* Current students
-* Early-career professionals
-* Experienced specialists
-* Senior / leadership resumes
-* Career changers
-* Industry changers
-* Function changers
-* Freelancers / consultants
-* Contractors
-* Founders
-* Academic → industry transitions
-* Technical → management transitions
-* Return-to-work candidates
-* Portfolio careers
-
-### Edge cases
-
-The evaluation suite also tests:
-
-* Genuine vs explained career gaps
-* Sabbaticals
-* Education-related gaps
-* Overlapping roles
-* Explicit and implicit career pivots
-* Skills with and without evidence
-* Projects supporting or contradicting stated direction
-* Academic and personal projects
-* Open-source work
-* Extracurriculars and hobbies
-* Approximate metrics
-* Different populations with similar numbers
-* Generic corporate language
-* Mixed professional signals
-* Headline/evidence mismatches
-* Poor PDF extraction
-* Two-column resumes
-* Tables
-* Missing headings
-* Missing summaries
-
-### Guardrails
-
-The suite also explicitly tests that the analyzer does **not** over-infer.
-
-Examples:
-
-* Missing information → **"Not evidenced in the resume"**
-* Ambiguous dates → Don't invent chronology
-* Ambiguous titles → Don't infer seniority from the title alone
-* Ambiguous transitions → Don't invent the reason
-* Ambiguous hobbies → Don't infer personality
-* A single leadership verb → Don't automatically conclude leadership
-
----
-
-# Current evaluation
-
-The current V2 implementation has been regression-tested against the 75-case controlled corpus.
-
-**75 / 75 behavioral assertions passing**
-
-**0 runtime failures**
-
-The evaluation is intentionally not treated as proof that resume interpretation is "solved." It is a regression framework designed to make future changes measurable and prevent known failure modes from returning.
-
----
-
-# Example analysis
-
-For a resume containing:
-
-```text
-Professional Summary:
-Business Operations Analyst...
-
-Experience:
-Revenue assurance
-Operational dashboards
-Process automation
-Stakeholder management
-
-Projects:
-AI-powered workflow automation
-
-Skills:
-Excel, Tableau, Python, SQL...
-```
-
-the tool may identify signals such as:
-
-```text
-Professional context
-Experienced professional
-
-Professional signals
 Operator
-Builder
-Analyst
 
-Evidence
-Strong evidence for operational ownership
-Strong evidence for automation
-Strong evidence for analytics
+Explorer
 
-Potential observation
-Some skills are listed without obvious supporting evidence
-```
+Artisan
 
-The goal is not to rewrite the resume automatically.
+Striver
 
-The goal is to help the person **see what their resume communicates**.
+Pioneer
 
----
+The archetype represents the professional profile the resume most strongly communicates based on its evidence. It is not a personality diagnosis.
 
-# Design principles
+10. Professional voice
 
-### 1. Diagnose before rewriting
+Looks at clarity, specificity, action language, evidence, generic corporate phrasing, and repeated language patterns.
 
-The product is intentionally not another "make my resume sound better" tool.
+It does not claim to determine whether a resume was written by AI.
 
-### 2. Evidence before inference
+11. Reader takeaway
 
-A conclusion should be traceable to something present in the resume.
+Separates:
 
-### 3. Ambiguity is allowed
+COMING THROUGH — concrete professional signals that are clearly communicated.
 
-If the resume doesn't provide enough information, the analyzer should say so.
+LESS CLEAR — signals a reader may want stronger evidence or explanation for.
 
-### 4. Don't confuse absence of evidence with evidence of absence
+"Less clear" does not mean the candidate lacks the capability. It means the resume does not currently make that capability sufficiently evident.
 
-Not mentioning something doesn't necessarily mean it didn't happen.
+How It Works
 
-### 5. Don't infer personality
+Resume Reality Check uses a hybrid architecture combining deterministic programming with LLM-based reasoning.
 
-The tool analyzes the professional story communicated by the document — not the person behind it.
+                    RESUME
+                       |
+                       v
+               PDF / TXT extraction
+                       |
+                       v
+              Privacy sanitization
+                       |
+              +--------+--------+
+              |                 |
+              v                 v
+       Deterministic          LLM
+          analysis           reasoning
+              |                 |
+              +--------+--------+
+                       |
+                       v
+               Structured result
+                       |
+                       v
+              Validated report
+                       |
+                       v
+                Visual analysis
 
-### 6. Don't claim AI authorship detection
+The LLM is not responsible for everything.
 
-Language can be generic, polished or templated without proving how it was written.
+Deterministic Analysis
 
-### 7. Context matters
+JavaScript handles tasks suited to explicit rules and structured logic, including:
 
-The same resume pattern can mean different things for a student, career changer and experienced professional.
+PDF text extraction
 
----
+text handling
 
-# Tech stack
+section detection
 
-Current V1/V2 is intentionally lightweight.
+date detection
 
-* **HTML**
-* **CSS**
-* **JavaScript**
-* **PDF.js** for browser-side PDF text extraction
-* Heuristic / rule-based reasoning
-* GitHub Pages
+timeline construction
 
-No backend is required for the current version.
+number extraction
 
-The project is designed to run as a standalone web application.
+metric detection
 
----
+evidence patterns
 
-# Privacy
+privacy sanitization
 
-Resume content is processed in the browser for the current version.
+fallback analysis
 
-The project does not require a resume database or backend service to operate.
+report rendering
 
-Because resumes contain personal and professional information, privacy is treated as an important product constraint rather than an afterthought.
+LLM Analysis
 
----
+The LLM is used where contextual interpretation is more useful than simple pattern matching, including:
 
-# Project structure
+narrative synthesis
 
-```text
+professional signals
+
+connections between experiences
+
+project interpretation
+
+professional voice
+
+reader takeaway
+
+archetype reasoning
+
+interpreting evidence in context
+
+The model receives structured instructions and returns structured JSON rather than arbitrary prose.
+
+Structured AI Output
+
+The LLM response is organized into fields such as:
+
+narrative
+archetype
+reader_takeaway
+professional_signals
+action_patterns
+beyond_job_title
+professional_voice
+connections
+observations
+confidence
+
+Privacy & API Security
+
+The application performs initial processing in the browser.
+
+Before AI analysis, sensitive personal information is sanitized where possible, including:
+
+email addresses
+
+phone numbers
+
+URLs
+
+social handles
+
+addresses
+
+labeled personal information
+
+certain sensitive identifiers
+
+The OpenAI API key is never sent to the browser.
+
+API key handling
+
+The API key should never be placed in:
+
+index.html
+
+frontend JavaScript
+
+vercel.json
+
+JSON files
+
+README.md
+
+GitHub Actions files
+
+any other public repository file
+
+The backend accesses it through:
+
+process.env.OPENAI_API_KEY
+
+The actual key is stored in the deployment environment, such as Vercel Environment Variables.
+
+Vercel
+→ Project
+→ Settings
+→ Environment Variables
+→ OPENAI_API_KEY
+
+The GitHub repository can therefore remain public without exposing the API key.
+
+.env.example
+
+The repository may contain:
+
+.env.example
+
+with only placeholders:
+
+OPENAI_API_KEY=
+OPENAI_MODEL=gpt-5
+
+The actual .env file should remain local and should be included in .gitignore.
+
+Technology Stack
+
+Technology
+
+Purpose
+
+HTML5
+
+Frontend structure
+
+CSS3
+
+UI and responsive styling
+
+JavaScript
+
+Application logic and analysis
+
+PDF.js
+
+Browser-based PDF text extraction
+
+OpenAI Responses API
+
+AI reasoning
+
+GPT-5
+
+LLM analysis
+
+JSON Schema
+
+Structured AI output
+
+SVG
+
+Archetype illustrations
+
+Vercel
+
+Serverless backend and deployment
+
+GitHub
+
+Source control and project hosting
+
+cdnjs
+
+PDF.js delivery
+
+Project Structure
+
 resume-reality-check/
 │
 ├── index.html
+│
+├── api/
+│   └── analyze.js
+│
+├── vercel.json
+│
+├── .gitignore
+├── .env.example
 ├── README.md
 │
 └── evaluation/
-    ├── resume-reality-check-evaluation-corpus.json
-    ├── resume-reality-check-evaluation-corpus.jsonl
-    ├── resume-reality-check-evaluation-index.csv
-    └── resume-reality-check-baseline-report.md
-```
+    ├── README.md
+    ├── evaluation-corpus.json
+    ├── evaluation-index.csv
+    └── regression-report.md
 
-The evaluation artifacts may be kept separately depending on the intended public repository structure.
+Running the Project
 
----
+Frontend only
 
-# What I learned building it
+The frontend can run without the AI backend. This allows the deterministic analysis functionality to operate locally.
 
-The biggest lesson from this project was that **resume analysis is fundamentally a reasoning problem, not just a text-matching problem**.
+It can process:
 
-A simple checker can easily answer:
+PDF resumes
 
-> "Does the resume contain the word Python?"
+TXT resumes
 
-A useful career-analysis tool needs to ask:
+pasted resume text
 
-> "Where is Python supported by evidence, what role does it play in the candidate's story, and how confident are we in that interpretation?"
+The LLM-enhanced analysis requires the backend.
 
-That shift — from **keyword detection → evidence → context → narrative** — became the core design principle of the project.
+Full AI version
 
----
+The complete version requires:
 
-# Future directions
+GitHub repository
 
-Potential next iterations include:
+Vercel deployment
 
-* Layout-aware PDF parsing
-* Better two-column and table extraction
-* More robust date / timeline modeling
-* Semantic skill-to-evidence matching
-* Stronger project-to-career-direction analysis
-* More sophisticated claim / metric consistency checks
-* Explainable confidence scores
-* Larger evaluation corpus
-* Public anonymized test cases
-* Optional AI-powered narrative analysis
-* Comparison of resume versions over time
+OpenAI API key
 
----
+Architecture:
 
-## Built as a portfolio project
+GitHub
+   |
+   v
+Vercel
+   |
+   +-- index.html
+   |
+   +-- /api/analyze
+            |
+            v
+       OpenAI API
 
-This project was built to explore how AI-assisted tools can move beyond surface-level text transformation and toward **structured reasoning about messy professional information**.
+Deployment
 
-The broader goal is not to create another resume generator.
+1. Create the GitHub repository
 
-It is to build a tool that helps answer:
+Create a repository such as:
 
-> **"If someone read this resume for 30 seconds, what professional story would they actually take away?"**
+resume-reality-check
 
----
+Upload the project files.
 
-### Author
+Do not upload:
 
-**Shrishti Vaish**
+.env
+personal resumes
+personal LinkedIn exports
+API keys
 
-Business Operations Analyst | Analytics | AI-enabled Automation | Data & Business Strategy
+2. Connect the repository to Vercel
 
-[LinkedIn](https://www.linkedin.com/in/shrishti-vaish/)
+Import the GitHub repository into Vercel.
+
+Vercel will deploy the frontend and the serverless function:
+
+/api/analyze
+
+3. Add the API key
+
+In Vercel:
+
+Project
+→ Settings
+→ Environment Variables
+
+Add:
+
+OPENAI_API_KEY
+
+with your actual OpenAI API key.
+
+Optionally add:
+
+OPENAI_MODEL
+
+with:
+
+gpt-5
+
+4. Redeploy
+
+After adding the environment variables, redeploy the project.
+
+The frontend can then call /api/analyze without exposing the API key to users.
+
+What This Project Does NOT Do
+
+Resume Reality Check intentionally avoids several types of inference.
+
+It does not attempt to determine:
+
+personality
+
+intelligence
+
+mental health
+
+physical health
+
+protected characteristics
+
+political beliefs
+
+religion
+
+ethnicity
+
+gender identity
+
+family status
+
+socioeconomic status
+
+It also does not claim:
+
+"This resume was written by AI."
+
+Language analysis is limited to observable writing patterns.
+
+Important Reasoning Principles
+
+Missing evidence is not negative evidence
+
+If a resume does not mention something, the system should generally say:
+
+"Not evidenced in the resume."
+
+rather than:
+
+"The candidate does not have this skill."
+
+Ambiguity is preserved
+
+If dates or transitions are unclear, the system should not invent an explanation.
+
+Titles are not treated as proof of seniority
+
+A job title alone is not enough to determine leadership level.
+
+One verb is not enough to establish leadership
+
+For example, the word "led" alone should not automatically produce a leadership conclusion.
+
+A career transition does not imply a reason
+
+The resume may show a transition without explaining why it happened.
+
+Archetypes describe the document
+
+The archetype is a lens for understanding the professional profile communicated by the resume, not a personality diagnosis.
+
+Evaluation
+
+The project was developed using an evaluation-driven approach.
+
+A controlled evaluation corpus was created with 75 scenarios covering different resume structures and edge cases.
+
+The scenarios include:
+
+Career stages
+
+fresh graduate
+
+current student
+
+early-career professional
+
+experienced specialist
+
+senior/leadership
+
+career changer
+
+industry changer
+
+function changer
+
+freelancer/consultant
+
+contractor
+
+founder
+
+academic → industry
+
+technical → management
+
+return-to-work
+
+portfolio career
+
+Edge cases
+
+genuine unexplained gaps
+
+explained career breaks
+
+sabbaticals
+
+education-related gaps
+
+overlapping roles
+
+short-term jobs
+
+explicit pivots
+
+implicit pivots
+
+unsupported pivots
+
+projects supporting a pivot
+
+skills with strong evidence
+
+skills with weak evidence
+
+skills without evidence
+
+extracurricular evidence
+
+project-heavy resumes
+
+inconsistent metrics
+
+approximate numbers
+
+generic corporate language
+
+AI-polished language
+
+headline/evidence mismatch
+
+parsing problems
+
+Guardrails
+
+The evaluation also checks that the system does not:
+
+invent chronology
+
+invent transition reasons
+
+infer personality
+
+infer protected characteristics
+
+infer leadership from one isolated verb
+
+treat missing evidence as proof of absence
+
+expose personal information
+
+Evaluation Result
+
+The deterministic analysis engine was regression-tested against the controlled evaluation corpus.
+
+The earlier validated version achieved:
+
+75 / 75 behavioral assertions passed
+0 runtime failures
+
+The LLM-enhanced version introduces an additional reasoning layer, so AI output should still be evaluated separately for consistency and hallucination.
+
+Design Philosophy
+
+The project follows five principles:
+
+1. Diagnose before rewriting
+
+The goal is not automatically to rewrite someone's resume. First understand the story.
+
+2. Evidence over assumptions
+
+Claims should be connected to observable evidence.
+
+3. Document analysis over personality prediction
+
+The product analyzes what the resume communicates, not who the person "really is."
+
+4. AI where it helps
+
+Use deterministic logic for structured problems and an LLM where contextual reasoning adds value.
+
+5. Graceful degradation
+
+If the AI service is unavailable, deterministic analysis can still provide useful results.
+
+Limitations
+
+This is an experimental portfolio project rather than a replacement for human recruiting judgment.
+
+Important limitations include:
+
+PDF extraction quality depends on the source PDF
+
+scanned/image-only PDFs may not contain extractable text
+
+unusual layouts can affect parsing
+
+heuristic analysis cannot understand every possible resume structure
+
+LLM interpretations can still be imperfect
+
+professional signals are interpretations of the document
+
+archetype classification is a communication lens, not a psychological assessment
+
+resume evidence is inherently incomplete
+
+The product should therefore be treated as a decision-support and reflection tool, not an automated hiring decision system.
+
+Why the Architecture Is Hybrid
+
+A fully rule-based system would struggle with nuanced professional narratives.
+
+A fully LLM-based system could be inconsistent and harder to validate.
+
+The hybrid approach combines both:
+
+Rules
++
+LLM reasoning
++
+Guardrails
++
+Structured output
+=
+More useful resume analysis
+
+The deterministic layer provides structure and predictable checks.
+
+The LLM provides contextual interpretation.
+
+The final report combines both.
+
+Future Directions
+
+Potential future improvements include:
+
+richer resume parsing
+
+better timeline reasoning
+
+stronger project-to-career connections
+
+comparison between resume and target job description
+
+recruiter-oriented analysis
+
+candidate self-assessment mode
+
+improved evaluation of LLM outputs
+
+additional document formats
+
+multilingual resume support
+
+stronger privacy controls
+
+user-controlled analysis depth
+
+Portfolio Context
+
+This project demonstrates more than an AI API integration.
+
+It combines:
+
+product thinking
+
+business problem framing
+
+document processing
+
+frontend development
+
+JavaScript programming
+
+deterministic analytics
+
+LLM integration
+
+prompt design
+
+structured outputs
+
+privacy considerations
+
+evaluation design
+
+UX design
+
+deployment architecture
+
+The central idea is:
+
+AI should add reasoning where it is useful, while deterministic systems provide structure, validation, and guardrails.
+
+Author
+
+Shrishti Vaish
+
+Business Operations | Analytics | AI-powered workflow and decision-support projects
+
+LinkedIn:
+https://www.linkedin.com/in/shrishti-vaish/
+
+License
+
+This project is licensed under the MIT License.
+
+Copyright (c) 2026 Shrishti Vaish.
+
+The MIT License allows others to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software, subject to the terms of the license. The copyright notice and license notice must be included in copies or substantial portions of the software.
+
+See the LICENSE file for the complete license text.
+
+Third-party components
+
+This license applies to the original work in this repository. Third-party libraries, services, datasets, fonts, and other external components remain subject to their respective licenses and terms.
